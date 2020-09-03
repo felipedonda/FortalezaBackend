@@ -1,0 +1,5 @@
+bin/
+obj/
+.vs/
+UserPreferences.Config.json
+Server.Config.json
