@@ -22,14 +22,45 @@ namespace FortalezaServer.Controllers
 
         // GET: api/Vendas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Venda>>> GetVenda()
+        public async Task<ActionResult<IEnumerable<Venda>>> GetVenda
+            (
+            int tipo = 0,
+            bool filtroData = false,
+            DateTime filtroDataInicio = default,
+            DateTime filtroDataFinal = default
+            )
         {
-            return await _context.Venda.ToListAsync();
+            List<Venda> vendas;
+
+            if(tipo >= 0)
+            {
+                vendas = await _context.Venda.Where(e => e.Tipo == tipo)
+                    .Include(e => e.ItemVenda)
+                    .ToListAsync();
+            }
+            else
+            {
+                vendas = await _context.Venda
+                    .Include(e => e.ItemVenda)
+                    .ToListAsync();
+            }
+
+            if(filtroData)
+            {
+                vendas = vendas.Where(e => e.HoraEntrada > filtroDataInicio & e.HoraEntrada < filtroDataFinal).ToList();
+            }
+
+            return vendas;
         }
 
         // GET: api/Vendas/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Venda>> GetVenda(int id, bool itemvendas = false, bool pagamentos = false)
+        public async Task<ActionResult<Venda>> GetVenda
+            (
+                int id,
+                bool itemvendas = false,
+                bool pagamentos = false
+            )
         {
             var venda = await _context.Venda.FindAsync(id);
 
@@ -38,24 +69,52 @@ namespace FortalezaServer.Controllers
                 return NotFound();
             }
 
-            if (itemvendas)
+
+
+            if(itemvendas)
             {
                 await _context.Entry(venda).Collection(e => e.ItemVenda)
-                    .Query()
-                    .Include(e => e.ItemNavigation)
-                    .LoadAsync();
+                        .Query()
+                        .Include(e => e.IditemNavigation)
+                        .LoadAsync();
+            }
+            else
+            {
+                await _context.Entry(venda).Collection(e => e.ItemVenda)
+                        .Query()
+                        .LoadAsync();
             }
 
             if (pagamentos)
             {
                 await _context.Entry(venda).Collection(e => e.Pagamento)
                     .Query()
-                    .Include(e => e.Movimento)
-                    .ThenInclude(e => e.FormaPagamentoNavigation)
+                    .Include(e => e.IdmovimentoNavigation)
+                    .ThenInclude(e => e.IdformaPagamentoNavigation)
+                    .LoadAsync();
+            }
+
+            if(venda.Idcliente != null)
+            {
+                await _context.Entry(venda).Reference(e => e.IdclienteNavigation)
                     .LoadAsync();
             }
 
             return venda;
+        }
+
+        // GET: api/Vendas/Actions/Aberta
+        [HttpGet("actions/aberta")]
+        public async Task<ActionResult<int>> GetVendaAberta(int tipo = 0)
+        {
+            var venda = await _context.Venda.Where(e => e.Aberta == 1 & e.Tipo == tipo).FirstOrDefaultAsync();
+
+            if (venda == null)
+            {
+                return 0;
+            }
+
+            return venda.Idvenda;
         }
 
         // PUT: api/Vendas/5
@@ -96,6 +155,7 @@ namespace FortalezaServer.Controllers
         [HttpPost]
         public async Task<ActionResult<Venda>> PostVenda(Venda venda)
         {
+            venda.NumeroVenda = await Venda.GetLastNumero(_context);
             _context.Venda.Add(venda);
             await _context.SaveChangesAsync();
 
@@ -112,15 +172,35 @@ namespace FortalezaServer.Controllers
                 return NotFound();
             }
 
-            pagamento.VendaIdvenda = id;
-            pagamento.Movimento.FormaPagamentoNavigation = null;
-            pagamento.Movimento.CaixaIdcaixaNavigation = null;
+            await _context.Entry(venda).Collection(e => e.ItemVenda).LoadAsync();
+
+            pagamento.Idvenda = id;
+            pagamento.IdmovimentoNavigation.IdformaPagamentoNavigation = null;
+            pagamento.IdmovimentoNavigation.IdcaixaNavigation = null;
+
+            if(venda.ValorPago == null)
+            {
+                venda.ValorPago = 0;
+            }
+
+            venda.ValorPago += pagamento.IdmovimentoNavigation.Valor;
+
+            if (venda.ValorPago >= venda.ValorTotal)
+            {
+                venda.Paga = 1;
+            }
+
+            if (venda.ValorPago > venda.ValorTotal)
+            {
+                pagamento.IdmovimentoNavigation.Valor -= (venda.ValorPago ?? default) - venda.ValorTotal;
+            }
 
             _context.Pagamento.Add(pagamento);
+            _context.Entry(venda).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetVenda", new { id = venda.Idvenda, pagamentos = true }, venda);
+            return CreatedAtAction("GetVenda", new { id = venda.Idvenda, pagamentos = true, itemsvenda = true });
         }
 
 
@@ -135,18 +215,9 @@ namespace FortalezaServer.Controllers
                 return NotFound();
             }
 
-            itemVenda.VendaIdvenda = id;
+            await venda.AddItemVenda(itemVenda, _context);
 
-            venda.ItemVenda.Add(itemVenda);
-           
-            await _context.SaveChangesAsync();
-
-            venda.ValorTotal += itemVenda.Quantidade * itemVenda.Valor;
-            _context.Entry(venda).State = EntityState.Modified;
-
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetVenda", new { id = venda.Idvenda, itemvendas = true }, venda);
+            return CreatedAtAction("GetVenda", new { id = venda.Idvenda, itemvendas = true });
         }
 
         [HttpDelete("{id}")]
@@ -160,7 +231,7 @@ namespace FortalezaServer.Controllers
 
             _context.Venda.Remove(venda);
             await _context.SaveChangesAsync();
-
+            
             return venda;
         }
 
@@ -175,32 +246,7 @@ namespace FortalezaServer.Controllers
                 return NotFound();
             }
 
-            await _context.Entry(venda).Collection(e => e.ItemVenda).LoadAsync();
-
-            foreach(var item in venda.ItemVenda.ToList())
-            {
-                await item.MovimentarEstoqueVenda(_context);
-            }
-
-            venda.Aberta = 0;
-
-            _context.Entry(venda).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!VendaExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await venda.FecharVenda(_context);
 
             return NoContent();
         }
@@ -208,6 +254,22 @@ namespace FortalezaServer.Controllers
         private bool VendaExists(int id)
         {
             return _context.Venda.Any(e => e.Idvenda == id);
+        }
+
+        // Get: api/Vendas/5/actions/recontaritems
+        [HttpGet("{id}/actions/recontaritems")]
+        public async Task<ActionResult<Venda>> RecontarItems(int id)
+        {
+            var venda = await _context.Venda.FindAsync(id);
+
+            if (venda == null)
+            {
+                return NotFound();
+            }
+
+            await venda.RecontarIndices(_context);
+
+            return NoContent();
         }
     }
 }

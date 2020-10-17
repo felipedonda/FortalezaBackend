@@ -11,58 +11,48 @@ namespace FortalezaServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GruposController : ControllerBase
+    public class EstoquesController : ControllerBase
     {
         private readonly fortalezaitdbContext _context;
 
-        public GruposController(fortalezaitdbContext context)
+        public EstoquesController(fortalezaitdbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Grupos
+        // GET: api/Estoques
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Grupo>>> GetGrupo()
+        public async Task<ActionResult<IEnumerable<Estoque>>> GetEstoque()
         {
-            return await _context.Grupo.ToListAsync();
+            return await _context.Estoque.ToListAsync();
         }
 
-        // GET: api/Grupos/5
+        // GET: api/Estoques/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Grupo>> GetGrupo(int id, bool items = false)
+        public async Task<ActionResult<Estoque>> GetEstoque(int id)
         {
-            var grupo = await _context.Grupo.FindAsync(id);
+            var estoque = await _context.Estoque.FindAsync(id);
 
-            if (grupo == null)
+            if (estoque == null)
             {
                 return NotFound();
             }
 
-            if(items)
-            {
-                await _context.Entry(grupo)
-                    .Collection(e => e.ItemHasGrupo)
-                    .Query()
-                    .Include(e => e.IditemNavigation)
-                    .Where(e => e.IditemNavigation.Visivel == 1)
-                    .LoadAsync();
-            }
-
-            return grupo;
+            return estoque;
         }
 
-        // PUT: api/Grupos/5
+        // PUT: api/Estoques/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGrupo(int id, Grupo grupo)
+        public async Task<IActionResult> PutEstoque(int id, Estoque estoque)
         {
-            if (id != grupo.Idgrupo)
+            if (id != estoque.Idestoque)
             {
                 return BadRequest();
             }
 
-            _context.Entry(grupo).State = EntityState.Modified;
+            _context.Entry(estoque).State = EntityState.Modified;
 
             try
             {
@@ -70,7 +60,7 @@ namespace FortalezaServer.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!GrupoExists(id))
+                if (!EstoqueExists(id))
                 {
                     return NotFound();
                 }
@@ -83,37 +73,37 @@ namespace FortalezaServer.Controllers
             return NoContent();
         }
 
-        // POST: api/Grupos
+        // POST: api/Estoques
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Grupo>> PostGrupo(Grupo grupo)
+        public async Task<ActionResult<Estoque>> PostEstoque(Estoque estoque)
         {
-            _context.Grupo.Add(grupo);
+            _context.Estoque.Add(estoque);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetGrupo", new { id = grupo.Idgrupo }, grupo);
+            return CreatedAtAction("GetEstoque", new { id = estoque.Idestoque }, estoque);
         }
 
-        // DELETE: api/Grupos/5
+        // DELETE: api/Estoques/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Grupo>> DeleteGrupo(int id)
+        public async Task<ActionResult<Estoque>> DeleteEstoque(int id)
         {
-            var grupo = await _context.Grupo.FindAsync(id);
-            if (grupo == null)
+            var estoque = await _context.Estoque.FindAsync(id);
+            if (estoque == null)
             {
                 return NotFound();
             }
 
-            _context.Grupo.Remove(grupo);
+            _context.Estoque.Remove(estoque);
             await _context.SaveChangesAsync();
 
-            return grupo;
+            return estoque;
         }
 
-        private bool GrupoExists(int id)
+        private bool EstoqueExists(int id)
         {
-            return _context.Grupo.Any(e => e.Idgrupo == id);
+            return _context.Estoque.Any(e => e.Idestoque == id);
         }
     }
 }

@@ -42,7 +42,7 @@ namespace FortalezaServer.Controllers
                 await _context.Entry(caixa)
                     .Collection(e => e.Movimento)
                     .Query()
-                    .Include(e => e.FormaPagamentoNavigation)
+                    .Include(e => e.IdformaPagamentoNavigation)
                     .LoadAsync();
             }
 

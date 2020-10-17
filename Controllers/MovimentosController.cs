@@ -52,6 +52,29 @@ namespace FortalezaServer.Controllers
                 return BadRequest();
             }
 
+            var oldMovimento = await _context.Movimento.FindAsync(id);
+
+            if (oldMovimento == null)
+            {
+                return NotFound();
+            }
+
+            await _context.Entry(oldMovimento)
+                .Collection(e => e.Pagamento)
+                .Query()
+                .Include(e => e.IdvendaNavigation)
+                .LoadAsync();
+
+            if (oldMovimento.Pagamento != null)
+            {
+                var pagamento = oldMovimento.Pagamento.FirstOrDefault();
+                pagamento.IdvendaNavigation.ValorPago -= oldMovimento.Valor;
+                pagamento.IdvendaNavigation.ValorPago += movimento.Valor;
+                _context.Entry(pagamento.IdvendaNavigation).State = EntityState.Modified;
+            }
+
+            _context.Entry(oldMovimento).State = EntityState.Detached;
+
             _context.Entry(movimento).State = EntityState.Modified;
 
             try
@@ -95,8 +118,22 @@ namespace FortalezaServer.Controllers
                 return NotFound();
             }
 
+            await _context.Entry(movimento)
+                .Collection(e => e.Pagamento)
+                .Query()
+                .Include(e => e.IdvendaNavigation)
+                .LoadAsync();
+
+            if (movimento.Pagamento != null)
+            {
+                var pagamento = movimento.Pagamento.FirstOrDefault();
+                pagamento.IdvendaNavigation.ValorPago -= movimento.Valor;
+                _context.Entry(pagamento.IdvendaNavigation).State = EntityState.Modified;
+            }
+
             _context.Movimento.Remove(movimento);
             await _context.SaveChangesAsync();
+
 
             return movimento;
         }

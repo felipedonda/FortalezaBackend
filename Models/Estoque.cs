@@ -7,7 +7,6 @@ namespace FortalezaServer.Models
     {
         public Estoque()
         {
-            AdicionalHasEstoque = new HashSet<AdicionalHasEstoque>();
             EstoqueHasFornecedor = new HashSet<EstoqueHasFornecedor>();
             EstoqueHasVenda = new HashSet<EstoqueHasVenda>();
             ItemHasEstoque = new HashSet<ItemHasEstoque>();
@@ -24,7 +23,6 @@ namespace FortalezaServer.Models
         public string NotaFiscal { get; set; }
         public string Observacao { get; set; }
 
-        public virtual ICollection<AdicionalHasEstoque> AdicionalHasEstoque { get; set; }
         public virtual ICollection<EstoqueHasFornecedor> EstoqueHasFornecedor { get; set; }
         public virtual ICollection<EstoqueHasVenda> EstoqueHasVenda { get; set; }
         public virtual ICollection<ItemHasEstoque> ItemHasEstoque { get; set; }

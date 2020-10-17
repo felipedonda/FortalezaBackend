@@ -22,9 +22,38 @@ namespace FortalezaServer.Controllers
 
         // GET: api/Items
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Item>>> GetItem()
+        public async Task<ActionResult<IEnumerable<Item>>> GetItem
+            (
+                bool estoqueAtual = false,
+                bool estoqueOnly = false,
+                bool visivelOnly = true
+            )
         {
-            return await _context.Item.ToListAsync();
+            List<Item> items = null;
+
+            if (estoqueOnly)
+            {
+                items = await _context.Item
+                    .Where(e => e.Estoque == 1)
+                    .ToListAsync();
+            }
+
+            if(items == null & visivelOnly)
+            {
+                items = await _context.Item.Where(e => e.Visivel == 1).ToListAsync();
+            }
+            
+            if(items == null)
+            {
+                items = await _context.Item.ToListAsync();
+            }
+
+            if(estoqueAtual)
+            {
+                items.ForEach(async e => await e.LoadItemEstoqueAtual(_context));
+            }
+
+            return items;
         }
 
         // GET: api/Items/5
@@ -49,7 +78,7 @@ namespace FortalezaServer.Controllers
                 await _context.Entry(item)
                     .Collection(e => e.ItemHasGrupo)
                     .Query()
-                        .Include(s => s.GrupoNavigation)
+                        .Include(s => s.IdgrupoNavigation)
                     .LoadAsync();
             }
 
@@ -69,7 +98,7 @@ namespace FortalezaServer.Controllers
                 await _context.Entry(item)
                     .Collection(e => e.ItemHasEstoque)
                     .Query()
-                        .Include(e => e.EstoqueNavigation)
+                        .Include(e => e.IdestoqueNavigation)
                     .LoadAsync();
             }
 
@@ -92,12 +121,12 @@ namespace FortalezaServer.Controllers
             var CurrentGrupos = await _context.Entry(_item).Collection(e => e.ItemHasGrupo).Query().ToListAsync();
 
             CurrentGrupos
-                .Where(e => !item.ItemHasGrupo.Any(s => s.GrupoIdgrupo == e.GrupoIdgrupo))
+                .Where(e => !item.ItemHasGrupo.Any(s => s.Idgrupo == e.Idgrupo))
                 .ToList()
                 .ForEach(e => _item.ItemHasGrupo.Remove(e));
 
             item.ItemHasGrupo
-                .Where(e => !CurrentGrupos.Any(s => s.GrupoIdgrupo == e.GrupoIdgrupo))
+                .Where(e => !CurrentGrupos.Any(s => s.Idgrupo == e.Idgrupo))
                 .ToList()
                 .ForEach(e => _item.ItemHasGrupo.Add(e));
 
@@ -118,13 +147,16 @@ namespace FortalezaServer.Controllers
                 }
             }
 
-
-            _context.Entry(item).State = EntityState.Modified;
-
-
             try
             {
+                _context.Entry(item).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
+
+                if (item.PacoteIditemNavigation != null)
+                {
+                    _context.Entry(item.PacoteIditemNavigation).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                }
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -147,9 +179,36 @@ namespace FortalezaServer.Controllers
         [HttpPost]
         public async Task<ActionResult<Item>> PostItem(Item item)
         {
-            item.ItemHasGrupo.ToList().ForEach(e => e.GrupoNavigation = null);
+            if(item.ItemHasGrupo != null)
+            {
+                item.ItemHasGrupo.ToList().ForEach(e => e.IdgrupoNavigation = null);
+            }
+
+            item.PacoteIditemNavigation.IditemProdutoNavigation = null;
+
+
+
             _context.Item.Add(item);
+
+
             await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetItem", new { id = item.Iditem }, item);
+        }
+
+        [HttpPost("{id}/estoques")]
+        public async Task<ActionResult<Item>> PostEstoque(int id, Estoque estoque)
+        {
+            var item = await _context.Item.FindAsync(id);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            await item.LoadItemTipo(_context);
+
+            await item.AddEstoque(estoque,_context);
 
             return CreatedAtAction("GetItem", new { id = item.Iditem }, item);
         }

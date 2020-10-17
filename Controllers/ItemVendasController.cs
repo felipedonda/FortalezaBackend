@@ -24,7 +24,7 @@ namespace FortalezaServer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ItemVenda>>> GetItemVenda()
         {
-            return await _context.ItemVenda.Include(e => e.ItemNavigation).ToListAsync();
+            return await _context.ItemVenda.Include(e => e.IditemNavigation).ToListAsync();
         }
 
         // GET: api/ItemVendas/5
@@ -38,7 +38,7 @@ namespace FortalezaServer.Controllers
                 return NotFound();
             }
 
-            await _context.Entry(itemVenda).Reference(e => e.ItemNavigation).LoadAsync();
+            await _context.Entry(itemVenda).Reference(e => e.IditemNavigation).LoadAsync();
 
             return itemVenda;
         }
@@ -78,6 +78,7 @@ namespace FortalezaServer.Controllers
         // POST: api/ItemVendas
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
+        /*
         [HttpPost]
         public async Task<ActionResult<ItemVenda>> PostItemVenda(ItemVenda itemVenda)
         {
@@ -86,6 +87,7 @@ namespace FortalezaServer.Controllers
 
             return CreatedAtAction("GetItemVenda", new { id = itemVenda.IditemVenda }, itemVenda);
         }
+        */
 
         // DELETE: api/ItemVendas/5
         [HttpDelete("{id}")]

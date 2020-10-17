@@ -11,58 +11,48 @@ namespace FortalezaServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GruposController : ControllerBase
+    public class TaxasEntregasController : ControllerBase
     {
         private readonly fortalezaitdbContext _context;
 
-        public GruposController(fortalezaitdbContext context)
+        public TaxasEntregasController(fortalezaitdbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Grupos
+        // GET: api/TaxasEntregas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Grupo>>> GetGrupo()
+        public async Task<ActionResult<IEnumerable<TaxasEntrega>>> GetTaxasEntrega()
         {
-            return await _context.Grupo.ToListAsync();
+            return await _context.TaxasEntrega.ToListAsync();
         }
 
-        // GET: api/Grupos/5
+        // GET: api/TaxasEntregas/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Grupo>> GetGrupo(int id, bool items = false)
+        public async Task<ActionResult<TaxasEntrega>> GetTaxasEntrega(int id)
         {
-            var grupo = await _context.Grupo.FindAsync(id);
+            var taxasEntrega = await _context.TaxasEntrega.FindAsync(id);
 
-            if (grupo == null)
+            if (taxasEntrega == null)
             {
                 return NotFound();
             }
 
-            if(items)
-            {
-                await _context.Entry(grupo)
-                    .Collection(e => e.ItemHasGrupo)
-                    .Query()
-                    .Include(e => e.IditemNavigation)
-                    .Where(e => e.IditemNavigation.Visivel == 1)
-                    .LoadAsync();
-            }
-
-            return grupo;
+            return taxasEntrega;
         }
 
-        // PUT: api/Grupos/5
+        // PUT: api/TaxasEntregas/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGrupo(int id, Grupo grupo)
+        public async Task<IActionResult> PutTaxasEntrega(int id, TaxasEntrega taxasEntrega)
         {
-            if (id != grupo.Idgrupo)
+            if (id != taxasEntrega.IdtaxasEntrega)
             {
                 return BadRequest();
             }
 
-            _context.Entry(grupo).State = EntityState.Modified;
+            _context.Entry(taxasEntrega).State = EntityState.Modified;
 
             try
             {
@@ -70,7 +60,7 @@ namespace FortalezaServer.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!GrupoExists(id))
+                if (!TaxasEntregaExists(id))
                 {
                     return NotFound();
                 }
@@ -83,37 +73,37 @@ namespace FortalezaServer.Controllers
             return NoContent();
         }
 
-        // POST: api/Grupos
+        // POST: api/TaxasEntregas
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Grupo>> PostGrupo(Grupo grupo)
+        public async Task<ActionResult<TaxasEntrega>> PostTaxasEntrega(TaxasEntrega taxasEntrega)
         {
-            _context.Grupo.Add(grupo);
+            _context.TaxasEntrega.Add(taxasEntrega);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetGrupo", new { id = grupo.Idgrupo }, grupo);
+            return CreatedAtAction("GetTaxasEntrega", new { id = taxasEntrega.IdtaxasEntrega }, taxasEntrega);
         }
 
-        // DELETE: api/Grupos/5
+        // DELETE: api/TaxasEntregas/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Grupo>> DeleteGrupo(int id)
+        public async Task<ActionResult<TaxasEntrega>> DeleteTaxasEntrega(int id)
         {
-            var grupo = await _context.Grupo.FindAsync(id);
-            if (grupo == null)
+            var taxasEntrega = await _context.TaxasEntrega.FindAsync(id);
+            if (taxasEntrega == null)
             {
                 return NotFound();
             }
 
-            _context.Grupo.Remove(grupo);
+            _context.TaxasEntrega.Remove(taxasEntrega);
             await _context.SaveChangesAsync();
 
-            return grupo;
+            return taxasEntrega;
         }
 
-        private bool GrupoExists(int id)
+        private bool TaxasEntregaExists(int id)
         {
-            return _context.Grupo.Any(e => e.Idgrupo == id);
+            return _context.TaxasEntrega.Any(e => e.IdtaxasEntrega == id);
         }
     }
 }

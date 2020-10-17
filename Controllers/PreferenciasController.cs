@@ -11,58 +11,48 @@ namespace FortalezaServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GruposController : ControllerBase
+    public class PreferenciasController : ControllerBase
     {
         private readonly fortalezaitdbContext _context;
 
-        public GruposController(fortalezaitdbContext context)
+        public PreferenciasController(fortalezaitdbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Grupos
+        // GET: api/Preferencias
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Grupo>>> GetGrupo()
+        public async Task<ActionResult<IEnumerable<Preferencias>>> GetPreferencias()
         {
-            return await _context.Grupo.ToListAsync();
+            return await _context.Preferencias.ToListAsync();
         }
 
-        // GET: api/Grupos/5
+        // GET: api/Preferencias/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Grupo>> GetGrupo(int id, bool items = false)
+        public async Task<ActionResult<Preferencias>> GetPreferencias(int id)
         {
-            var grupo = await _context.Grupo.FindAsync(id);
+            var preferencias = await _context.Preferencias.FindAsync(id);
 
-            if (grupo == null)
+            if (preferencias == null)
             {
                 return NotFound();
             }
 
-            if(items)
-            {
-                await _context.Entry(grupo)
-                    .Collection(e => e.ItemHasGrupo)
-                    .Query()
-                    .Include(e => e.IditemNavigation)
-                    .Where(e => e.IditemNavigation.Visivel == 1)
-                    .LoadAsync();
-            }
-
-            return grupo;
+            return preferencias;
         }
 
-        // PUT: api/Grupos/5
+        // PUT: api/Preferencias/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGrupo(int id, Grupo grupo)
+        public async Task<IActionResult> PutPreferencias(int id, Preferencias preferencias)
         {
-            if (id != grupo.Idgrupo)
+            if (id != preferencias.Idpreferencias)
             {
                 return BadRequest();
             }
 
-            _context.Entry(grupo).State = EntityState.Modified;
+            _context.Entry(preferencias).State = EntityState.Modified;
 
             try
             {
@@ -70,7 +60,7 @@ namespace FortalezaServer.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!GrupoExists(id))
+                if (!PreferenciasExists(id))
                 {
                     return NotFound();
                 }
@@ -83,37 +73,37 @@ namespace FortalezaServer.Controllers
             return NoContent();
         }
 
-        // POST: api/Grupos
+        // POST: api/Preferencias
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Grupo>> PostGrupo(Grupo grupo)
+        public async Task<ActionResult<Preferencias>> PostPreferencias(Preferencias preferencias)
         {
-            _context.Grupo.Add(grupo);
+            _context.Preferencias.Add(preferencias);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetGrupo", new { id = grupo.Idgrupo }, grupo);
+            return CreatedAtAction("GetPreferencias", new { id = preferencias.Idpreferencias }, preferencias);
         }
 
-        // DELETE: api/Grupos/5
+        // DELETE: api/Preferencias/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Grupo>> DeleteGrupo(int id)
+        public async Task<ActionResult<Preferencias>> DeletePreferencias(int id)
         {
-            var grupo = await _context.Grupo.FindAsync(id);
-            if (grupo == null)
+            var preferencias = await _context.Preferencias.FindAsync(id);
+            if (preferencias == null)
             {
                 return NotFound();
             }
 
-            _context.Grupo.Remove(grupo);
+            _context.Preferencias.Remove(preferencias);
             await _context.SaveChangesAsync();
 
-            return grupo;
+            return preferencias;
         }
 
-        private bool GrupoExists(int id)
+        private bool PreferenciasExists(int id)
         {
-            return _context.Grupo.Any(e => e.Idgrupo == id);
+            return _context.Preferencias.Any(e => e.Idpreferencias == id);
         }
     }
 }

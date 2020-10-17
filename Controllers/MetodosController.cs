@@ -11,58 +11,48 @@ namespace FortalezaServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GruposController : ControllerBase
+    public class MetodosController : ControllerBase
     {
         private readonly fortalezaitdbContext _context;
 
-        public GruposController(fortalezaitdbContext context)
+        public MetodosController(fortalezaitdbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Grupos
+        // GET: api/Metodos
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Grupo>>> GetGrupo()
+        public async Task<ActionResult<IEnumerable<Metodo>>> GetMetodo()
         {
-            return await _context.Grupo.ToListAsync();
+            return await _context.Metodo.ToListAsync();
         }
 
-        // GET: api/Grupos/5
+        // GET: api/Metodos/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Grupo>> GetGrupo(int id, bool items = false)
+        public async Task<ActionResult<Metodo>> GetMetodo(int id)
         {
-            var grupo = await _context.Grupo.FindAsync(id);
+            var metodo = await _context.Metodo.FindAsync(id);
 
-            if (grupo == null)
+            if (metodo == null)
             {
                 return NotFound();
             }
 
-            if(items)
-            {
-                await _context.Entry(grupo)
-                    .Collection(e => e.ItemHasGrupo)
-                    .Query()
-                    .Include(e => e.IditemNavigation)
-                    .Where(e => e.IditemNavigation.Visivel == 1)
-                    .LoadAsync();
-            }
-
-            return grupo;
+            return metodo;
         }
 
-        // PUT: api/Grupos/5
+        // PUT: api/Metodos/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGrupo(int id, Grupo grupo)
+        public async Task<IActionResult> PutMetodo(int id, Metodo metodo)
         {
-            if (id != grupo.Idgrupo)
+            if (id != metodo.Idmetodo)
             {
                 return BadRequest();
             }
 
-            _context.Entry(grupo).State = EntityState.Modified;
+            _context.Entry(metodo).State = EntityState.Modified;
 
             try
             {
@@ -70,7 +60,7 @@ namespace FortalezaServer.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!GrupoExists(id))
+                if (!MetodoExists(id))
                 {
                     return NotFound();
                 }
@@ -83,37 +73,37 @@ namespace FortalezaServer.Controllers
             return NoContent();
         }
 
-        // POST: api/Grupos
+        // POST: api/Metodos
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Grupo>> PostGrupo(Grupo grupo)
+        public async Task<ActionResult<Metodo>> PostMetodo(Metodo metodo)
         {
-            _context.Grupo.Add(grupo);
+            _context.Metodo.Add(metodo);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetGrupo", new { id = grupo.Idgrupo }, grupo);
+            return CreatedAtAction("GetMetodo", new { id = metodo.Idmetodo }, metodo);
         }
 
-        // DELETE: api/Grupos/5
+        // DELETE: api/Metodos/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Grupo>> DeleteGrupo(int id)
+        public async Task<ActionResult<Metodo>> DeleteMetodo(int id)
         {
-            var grupo = await _context.Grupo.FindAsync(id);
-            if (grupo == null)
+            var metodo = await _context.Metodo.FindAsync(id);
+            if (metodo == null)
             {
                 return NotFound();
             }
 
-            _context.Grupo.Remove(grupo);
+            _context.Metodo.Remove(metodo);
             await _context.SaveChangesAsync();
 
-            return grupo;
+            return metodo;
         }
 
-        private bool GrupoExists(int id)
+        private bool MetodoExists(int id)
         {
-            return _context.Grupo.Any(e => e.Idgrupo == id);
+            return _context.Metodo.Any(e => e.Idmetodo == id);
         }
     }
 }

@@ -5,10 +5,10 @@ namespace FortalezaServer.Models
 {
     public partial class ItemHasGrupo
     {
-        public int ItemIditem { get; set; }
-        public int GrupoIdgrupo { get; set; }
+        public int Iditem { get; set; }
+        public int Idgrupo { get; set; }
 
-        public virtual Grupo GrupoNavigation { get; set; }
-        public virtual Item ItemNavigation { get; set; }
+        public virtual Grupo IdgrupoNavigation { get; set; }
+        public virtual Item IditemNavigation { get; set; }
     }
 }

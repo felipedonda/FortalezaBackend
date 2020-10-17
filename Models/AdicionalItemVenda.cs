@@ -10,13 +10,10 @@ namespace FortalezaServer.Models
         public decimal Quantidade { get; set; }
         public decimal ValorVenda { get; set; }
         public decimal? Custo { get; set; }
-        public int AdicionalIdadicional1 { get; set; }
-        public int AdicionalItemIditem { get; set; }
-        public int ItemVendaIditemVenda { get; set; }
-        public int ItemVendaItemIditem { get; set; }
-        public int ItemVendaVendaIdvenda { get; set; }
+        public int Idadicional { get; set; }
+        public int IditemVenda { get; set; }
 
-        public virtual Adicional AdicionalI { get; set; }
-        public virtual ItemVenda ItemVenda { get; set; }
+        public virtual Adicional IdadicionalNavigation { get; set; }
+        public virtual ItemVenda IditemVendaNavigation { get; set; }
     }
 }

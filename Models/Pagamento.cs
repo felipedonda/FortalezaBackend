@@ -5,12 +5,10 @@ namespace FortalezaServer.Models
 {
     public partial class Pagamento
     {
-        public int VendaIdvenda { get; set; }
-        public int MovimentoIdmovimento { get; set; }
-        public int MovimentoFormaPagamentoIdformaPagamento { get; set; }
-        public int MovimentoCaixaIdcaixa { get; set; }
+        public int Idvenda { get; set; }
+        public int Idmovimento { get; set; }
 
-        public virtual Movimento Movimento { get; set; }
-        public virtual Venda VendaIdvendaNavigation { get; set; }
+        public virtual Movimento IdmovimentoNavigation { get; set; }
+        public virtual Venda IdvendaNavigation { get; set; }
     }
 }

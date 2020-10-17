@@ -25,16 +25,39 @@ namespace FortalezaServer.Controllers
         public async Task<ActionResult<IEnumerable<Cliente>>> GetCliente()
         {
             return await _context.Cliente
-                .Include(e => e.ClienteHasEndereco)
-                .ThenInclude(e => e.EnderecoIdenderecoNavigation)
+                .Include(e => e.IdenderecoNavigation)
                 .ToListAsync();
         }
 
         // GET: api/Clientes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Cliente>> GetCliente(int id)
+        public async Task<ActionResult<Cliente>> GetCliente(string id, bool cpf = false)
         {
-            var cliente = await _context.Cliente.FindAsync(id);
+            int _id = 0;
+            if(!cpf)
+            {
+                try
+                {
+                    _id = int.Parse(id);
+                }
+                catch
+                {
+                    return BadRequest();
+                }
+            }
+
+            var cliente = new Cliente();
+
+            if(cpf)
+            {
+                cliente = await _context.Cliente
+                    .Where(e => e.Cpf == id)
+                    .FirstAsync();
+            }
+            else
+            {
+                cliente = await _context.Cliente.FindAsync(_id);
+            }
 
             if (cliente == null)
             {
@@ -42,9 +65,7 @@ namespace FortalezaServer.Controllers
             }
 
             await _context.Entry(cliente)
-                .Collection(e => e.ClienteHasEndereco)
-                .Query()
-                .Include(e => e.EnderecoIdenderecoNavigation)
+                .Reference(e => e.IdenderecoNavigation)
                 .LoadAsync();
 
             return cliente;
@@ -61,38 +82,11 @@ namespace FortalezaServer.Controllers
                 return BadRequest();
             }
 
-            var _cliente = await _context.Cliente.FindAsync(id);
-
-            if (_cliente == null)
-            {
-                return NotFound();
-            }
-
-            await _context.Entry(_cliente)
-                .Collection(e => e.ClienteHasEndereco)
-                .Query()
-                .Include(e => e.EnderecoIdenderecoNavigation)
-                .LoadAsync();
-
-            if(_cliente.ClienteHasEndereco.Count > 0)
-            {
-                foreach(var ce in _cliente.ClienteHasEndereco.ToList())
-                {
-                    _cliente.ClienteHasEndereco.Remove(ce);
-                    _context.Endereco.Remove(ce.EnderecoIdenderecoNavigation);
-                }
-            }
-
-            if(cliente.ClienteHasEndereco.Count > 0)
-            {
-                _cliente.ClienteHasEndereco.Add(cliente.ClienteHasEndereco.First());
-            }
-
-            await _context.SaveChangesAsync();
-
-            _context.Entry(_cliente).State = EntityState.Detached;
-
+            Endereco endereco = cliente.IdenderecoNavigation;
             _context.Entry(cliente).State = EntityState.Modified;
+            _context.Entry(endereco).State = EntityState.Modified;
+
+            //_context.Entry(cliente.IdenderecoNavigation).State = EntityState.Modified;
 
             try
             {

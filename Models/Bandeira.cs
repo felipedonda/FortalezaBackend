@@ -7,7 +7,7 @@ namespace FortalezaServer.Models
     {
         public Bandeira()
         {
-            MovimentoHasBandeira = new HashSet<MovimentoHasBandeira>();
+            Movimento = new HashSet<Movimento>();
         }
 
         public int Idbandeira { get; set; }
@@ -18,6 +18,6 @@ namespace FortalezaServer.Models
         public decimal? TaxaDebito { get; set; }
         public int? PrazoDebito { get; set; }
 
-        public virtual ICollection<MovimentoHasBandeira> MovimentoHasBandeira { get; set; }
+        public virtual ICollection<Movimento> Movimento { get; set; }
     }
 }

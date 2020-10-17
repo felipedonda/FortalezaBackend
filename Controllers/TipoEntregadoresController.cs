@@ -11,58 +11,48 @@ namespace FortalezaServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GruposController : ControllerBase
+    public class TipoEntregadoresController : ControllerBase
     {
         private readonly fortalezaitdbContext _context;
 
-        public GruposController(fortalezaitdbContext context)
+        public TipoEntregadoresController(fortalezaitdbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Grupos
+        // GET: api/TipoEntregadores
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Grupo>>> GetGrupo()
+        public async Task<ActionResult<IEnumerable<TipoEntregador>>> GetTipoEntregador()
         {
-            return await _context.Grupo.ToListAsync();
+            return await _context.TipoEntregador.ToListAsync();
         }
 
-        // GET: api/Grupos/5
+        // GET: api/TipoEntregadores/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Grupo>> GetGrupo(int id, bool items = false)
+        public async Task<ActionResult<TipoEntregador>> GetTipoEntregador(int id)
         {
-            var grupo = await _context.Grupo.FindAsync(id);
+            var tipoEntregador = await _context.TipoEntregador.FindAsync(id);
 
-            if (grupo == null)
+            if (tipoEntregador == null)
             {
                 return NotFound();
             }
 
-            if(items)
-            {
-                await _context.Entry(grupo)
-                    .Collection(e => e.ItemHasGrupo)
-                    .Query()
-                    .Include(e => e.IditemNavigation)
-                    .Where(e => e.IditemNavigation.Visivel == 1)
-                    .LoadAsync();
-            }
-
-            return grupo;
+            return tipoEntregador;
         }
 
-        // PUT: api/Grupos/5
+        // PUT: api/TipoEntregadores/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutGrupo(int id, Grupo grupo)
+        public async Task<IActionResult> PutTipoEntregador(int id, TipoEntregador tipoEntregador)
         {
-            if (id != grupo.Idgrupo)
+            if (id != tipoEntregador.IdtipoEntregador)
             {
                 return BadRequest();
             }
 
-            _context.Entry(grupo).State = EntityState.Modified;
+            _context.Entry(tipoEntregador).State = EntityState.Modified;
 
             try
             {
@@ -70,7 +60,7 @@ namespace FortalezaServer.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!GrupoExists(id))
+                if (!TipoEntregadorExists(id))
                 {
                     return NotFound();
                 }
@@ -83,37 +73,37 @@ namespace FortalezaServer.Controllers
             return NoContent();
         }
 
-        // POST: api/Grupos
+        // POST: api/TipoEntregadores
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Grupo>> PostGrupo(Grupo grupo)
+        public async Task<ActionResult<TipoEntregador>> PostTipoEntregador(TipoEntregador tipoEntregador)
         {
-            _context.Grupo.Add(grupo);
+            _context.TipoEntregador.Add(tipoEntregador);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetGrupo", new { id = grupo.Idgrupo }, grupo);
+            return CreatedAtAction("GetTipoEntregador", new { id = tipoEntregador.IdtipoEntregador }, tipoEntregador);
         }
 
-        // DELETE: api/Grupos/5
+        // DELETE: api/TipoEntregadores/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Grupo>> DeleteGrupo(int id)
+        public async Task<ActionResult<TipoEntregador>> DeleteTipoEntregador(int id)
         {
-            var grupo = await _context.Grupo.FindAsync(id);
-            if (grupo == null)
+            var tipoEntregador = await _context.TipoEntregador.FindAsync(id);
+            if (tipoEntregador == null)
             {
                 return NotFound();
             }
 
-            _context.Grupo.Remove(grupo);
+            _context.TipoEntregador.Remove(tipoEntregador);
             await _context.SaveChangesAsync();
 
-            return grupo;
+            return tipoEntregador;
         }
 
-        private bool GrupoExists(int id)
+        private bool TipoEntregadorExists(int id)
         {
-            return _context.Grupo.Any(e => e.Idgrupo == id);
+            return _context.TipoEntregador.Any(e => e.IdtipoEntregador == id);
         }
     }
 }

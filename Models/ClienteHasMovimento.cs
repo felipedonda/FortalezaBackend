@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace FortalezaServer.Models
 {
-    public partial class ClienteHasEndereco
+    public partial class ClienteHasMovimento
     {
         public int ClienteIdcliente { get; set; }
-        public int EnderecoIdendereco { get; set; }
+        public int MovimentoIdmovimento { get; set; }
 
         public virtual Cliente ClienteIdclienteNavigation { get; set; }
-        public virtual Endereco EnderecoIdenderecoNavigation { get; set; }
+        public virtual Movimento MovimentoIdmovimentoNavigation { get; set; }
     }
 }

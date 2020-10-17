@@ -7,7 +7,7 @@ namespace FortalezaServer.Models
     {
         public Movimento()
         {
-            MovimentoHasBandeira = new HashSet<MovimentoHasBandeira>();
+            ClienteHasMovimento = new HashSet<ClienteHasMovimento>();
             Pagamento = new HashSet<Pagamento>();
         }
 
@@ -16,12 +16,14 @@ namespace FortalezaServer.Models
         public string Descricao { get; set; }
         public string Tipo { get; set; }
         public decimal Valor { get; set; }
-        public int FormaPagamentoIdformaPagamento { get; set; }
-        public int CaixaIdcaixa { get; set; }
+        public int? IdformaPagamento { get; set; }
+        public int? Idcaixa { get; set; }
+        public int? Idbandeira { get; set; }
 
-        public virtual Caixa CaixaIdcaixaNavigation { get; set; }
-        public virtual FormaPagamento FormaPagamentoNavigation { get; set; }
-        public virtual ICollection<MovimentoHasBandeira> MovimentoHasBandeira { get; set; }
+        public virtual Bandeira IdbandeiraNavigation { get; set; }
+        public virtual Caixa IdcaixaNavigation { get; set; }
+        public virtual FormaPagamento IdformaPagamentoNavigation { get; set; }
+        public virtual ICollection<ClienteHasMovimento> ClienteHasMovimento { get; set; }
         public virtual ICollection<Pagamento> Pagamento { get; set; }
     }
 }

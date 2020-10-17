@@ -7,8 +7,8 @@ namespace FortalezaServer.Models
     {
         public Adicional()
         {
-            AdicionalHasEstoque = new HashSet<AdicionalHasEstoque>();
             AdicionalItemVenda = new HashSet<AdicionalItemVenda>();
+            ItemHasAdicional = new HashSet<ItemHasAdicional>();
         }
 
         public int Idadicional { get; set; }
@@ -16,10 +16,8 @@ namespace FortalezaServer.Models
         public decimal? Valor { get; set; }
         public string Unidade { get; set; }
         public byte Incluso { get; set; }
-        public int ItemIditem { get; set; }
 
-        public virtual Item ItemIditemNavigation { get; set; }
-        public virtual ICollection<AdicionalHasEstoque> AdicionalHasEstoque { get; set; }
         public virtual ICollection<AdicionalItemVenda> AdicionalItemVenda { get; set; }
+        public virtual ICollection<ItemHasAdicional> ItemHasAdicional { get; set; }
     }
 }

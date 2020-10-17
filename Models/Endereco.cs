@@ -7,9 +7,9 @@ namespace FortalezaServer.Models
     {
         public Endereco()
         {
-            ClienteHasEndereco = new HashSet<ClienteHasEndereco>();
-            InformacoesEmpresaHasEndereco = new HashSet<InformacoesEmpresaHasEndereco>();
-            UsuarioHasEndereco = new HashSet<UsuarioHasEndereco>();
+            Cliente = new HashSet<Cliente>();
+            InformacoesEmpresa = new HashSet<InformacoesEmpresa>();
+            Usuario = new HashSet<Usuario>();
         }
 
         public int Idendereco { get; set; }
@@ -23,8 +23,8 @@ namespace FortalezaServer.Models
         public string Municipio { get; set; }
         public string Uf { get; set; }
 
-        public virtual ICollection<ClienteHasEndereco> ClienteHasEndereco { get; set; }
-        public virtual ICollection<InformacoesEmpresaHasEndereco> InformacoesEmpresaHasEndereco { get; set; }
-        public virtual ICollection<UsuarioHasEndereco> UsuarioHasEndereco { get; set; }
+        public virtual ICollection<Cliente> Cliente { get; set; }
+        public virtual ICollection<InformacoesEmpresa> InformacoesEmpresa { get; set; }
+        public virtual ICollection<Usuario> Usuario { get; set; }
     }
 }

@@ -5,10 +5,10 @@ namespace FortalezaServer.Models
 {
     public partial class EstoqueHasVenda
     {
-        public int EstoqueIdestoque { get; set; }
-        public int VendaIdvenda { get; set; }
+        public int Idestoque { get; set; }
+        public int Idvenda { get; set; }
 
-        public virtual Estoque EstoqueIdestoqueNavigation { get; set; }
-        public virtual Venda VendaIdvendaNavigation { get; set; }
+        public virtual Estoque IdestoqueNavigation { get; set; }
+        public virtual Venda IdvendaNavigation { get; set; }
     }
 }

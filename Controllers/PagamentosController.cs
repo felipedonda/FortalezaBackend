@@ -47,7 +47,7 @@ namespace FortalezaServer.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPagamento(int id, Pagamento pagamento)
         {
-            if (id != pagamento.VendaIdvenda)
+            if (id != pagamento.Idvenda)
             {
                 return BadRequest();
             }
@@ -86,7 +86,7 @@ namespace FortalezaServer.Controllers
             }
             catch (DbUpdateException)
             {
-                if (PagamentoExists(pagamento.VendaIdvenda))
+                if (PagamentoExists(pagamento.Idvenda))
                 {
                     return Conflict();
                 }
@@ -96,7 +96,7 @@ namespace FortalezaServer.Controllers
                 }
             }
 
-            return CreatedAtAction("GetPagamento", new { id = pagamento.VendaIdvenda }, pagamento);
+            return CreatedAtAction("GetPagamento", new { id = pagamento.Idvenda }, pagamento);
         }
 
         // DELETE: api/Pagamentos/5
@@ -117,7 +117,7 @@ namespace FortalezaServer.Controllers
 
         private bool PagamentoExists(int id)
         {
-            return _context.Pagamento.Any(e => e.VendaIdvenda == id);
+            return _context.Pagamento.Any(e => e.Idvenda == id);
         }
     }
 }

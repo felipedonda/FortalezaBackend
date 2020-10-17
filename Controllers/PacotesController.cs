@@ -47,7 +47,7 @@ namespace FortalezaServer.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPacote(int id, Pacote pacote)
         {
-            if (id != pacote.ItemIditem)
+            if (id != pacote.Iditem)
             {
                 return BadRequest();
             }
@@ -86,7 +86,7 @@ namespace FortalezaServer.Controllers
             }
             catch (DbUpdateException)
             {
-                if (PacoteExists(pacote.ItemIditem))
+                if (PacoteExists(pacote.Iditem))
                 {
                     return Conflict();
                 }
@@ -96,7 +96,7 @@ namespace FortalezaServer.Controllers
                 }
             }
 
-            return CreatedAtAction("GetPacote", new { id = pacote.ItemIditem }, pacote);
+            return CreatedAtAction("GetPacote", new { id = pacote.Iditem }, pacote);
         }
 
         // DELETE: api/Pacotes/5
@@ -117,7 +117,7 @@ namespace FortalezaServer.Controllers
 
         private bool PacoteExists(int id)
         {
-            return _context.Pacote.Any(e => e.ItemIditem == id);
+            return _context.Pacote.Any(e => e.Iditem == id);
         }
     }
 }
