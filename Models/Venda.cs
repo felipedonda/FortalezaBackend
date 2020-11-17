@@ -17,14 +17,13 @@ namespace FortalezaServer.Models
         public int NumeroVenda { get; set; }
         public int Tipo { get; set; }
         public string Descricao { get; set; }
-        public decimal? Acrescimo { get; set; }
-        public decimal? Desconto { get; set; }
-        public decimal? CustoTotal { get; set; }
+        public decimal Acrescimo { get; set; }
+        public decimal Desconto { get; set; }
         public DateTime HoraEntrada { get; set; }
         public DateTime? HoraFechamento { get; set; }
         public byte Aberta { get; set; }
         public byte Paga { get; set; }
-        public decimal? ValorPago { get; set; }
+        public decimal ValorPago { get; set; }
         public int Idresponsavel { get; set; }
         public int? Idcliente { get; set; }
 

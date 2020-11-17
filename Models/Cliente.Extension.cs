@@ -24,5 +24,26 @@ namespace FortalezaServer.Models
                 return false;
             }
         }
+
+        [NotMapped]
+        public decimal CreditoEmConta
+        { 
+            get
+            {
+                decimal creditoEmConta = 0;
+                foreach(var CM in ClienteHasMovimento)
+                {
+                    if(CM.MovimentoIdmovimentoNavigation.Tipo == "C")
+                    {
+                        creditoEmConta += CM.MovimentoIdmovimentoNavigation.Valor;
+                    }
+                    else
+                    {
+                        creditoEmConta -= CM.MovimentoIdmovimentoNavigation.Valor;
+                    }
+                }
+                return creditoEmConta;
+            }
+        }
     }
 }

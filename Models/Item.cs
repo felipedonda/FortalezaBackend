@@ -24,12 +24,12 @@ namespace FortalezaServer.Models
         public byte Disponivel { get; set; }
         public byte Estoque { get; set; }
         public decimal? EstoqueMinimo { get; set; }
-        public string Tipo { get; set; }
+        public int Tipo { get; set; }
         public byte PermiteCombo { get; set; }
         public byte UnidadeInteira { get; set; }
-        public byte Varejo { get; set; }
-        public decimal? ValorVarejo { get; set; }
-        public decimal? QuantidadeVarejo { get; set; }
+        public byte Atacado { get; set; }
+        public decimal? ValorAtacado { get; set; }
+        public decimal? QuantidadeAtacado { get; set; }
 
         public virtual Fiscal Fiscal { get; set; }
         public virtual Pacote PacoteIditemNavigation { get; set; }

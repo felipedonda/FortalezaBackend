@@ -22,9 +22,23 @@ namespace FortalezaServer.Controllers
 
         // GET: api/ItemVendas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ItemVenda>>> GetItemVenda()
+        public async Task<ActionResult<IEnumerable<ItemVenda>>> GetItemVenda(
+            bool filtroData = false,
+            DateTime filtroDataInicio = default,
+            DateTime filtroDataFinal = default
+            )
         {
-            return await _context.ItemVenda.Include(e => e.IditemNavigation).ToListAsync();
+            if(filtroData)
+            {
+                return await _context.ItemVenda.Include(e => e.IditemNavigation)
+                    .Where(e => e.IdvendaNavigation.HoraFechamento > filtroDataInicio)
+                    .Where(e => e.IdvendaNavigation.HoraFechamento < filtroDataFinal)
+                    .ToListAsync();
+            }
+            else
+            {
+                return await _context.ItemVenda.Include(e => e.IditemNavigation).ToListAsync();
+            }
         }
 
         // GET: api/ItemVendas/5

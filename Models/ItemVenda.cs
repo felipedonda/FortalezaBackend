@@ -14,6 +14,7 @@ namespace FortalezaServer.Models
         public decimal Quantidade { get; set; }
         public decimal? Valor { get; set; }
         public decimal? Custo { get; set; }
+        public byte Cancelado { get; set; }
         public int Indice { get; set; }
         public int Idvenda { get; set; }
         public int Iditem { get; set; }

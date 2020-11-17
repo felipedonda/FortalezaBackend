@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FortalezaServer.Models;
+using System.IO;
 
 namespace FortalezaServer.Controllers
 {
@@ -211,6 +212,31 @@ namespace FortalezaServer.Controllers
             await item.AddEstoque(estoque,_context);
 
             return CreatedAtAction("GetItem", new { id = item.Iditem }, item);
+        }
+
+        [HttpPost("{id}/imagem")]
+        public async Task<ActionResult<Item>> PostImagem(int id, IFormFile imagem)
+        {
+            var item = await _context.Item.FindAsync(id);
+
+            if (item == null)
+            {
+                return NotFound();
+            }
+
+            var fileName = "imagem-item-" + item.Iditem + Path.GetExtension(imagem.FileName);
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), @"wwwroot\images", fileName);
+
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await imagem.CopyToAsync(fileStream);
+            }
+
+            item.Imagem = fileName;
+            _context.Entry(item).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetItem", new { id = item.Iditem });
         }
 
         // DELETE: api/Items/5

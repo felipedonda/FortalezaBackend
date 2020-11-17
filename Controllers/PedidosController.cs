@@ -45,6 +45,7 @@ namespace FortalezaServer.Controllers
                 .ToListAsync();
             }
 
+
             pedidos.ForEach(async pedido =>
             {
                 if(pedido.IdentregadorNavigation != null)
@@ -57,6 +58,7 @@ namespace FortalezaServer.Controllers
                     .Include(e => e.IdenderecoNavigation)
                     .LoadAsync();
                 await _context.Entry(pedido.IdvendaNavigation).Collection(e => e.ItemVenda).LoadAsync();
+
             });
 
             return pedidos;
@@ -64,7 +66,7 @@ namespace FortalezaServer.Controllers
 
         // GET: api/Pedidos/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Pedido>> GetPedido(int id, bool itemVenda = false)
+        public async Task<ActionResult<Pedido>> GetPedido(int id, bool itemVenda = false, bool pagamento = false)
         {
             var pedido = await _context.Pedido.FindAsync(id);
 
@@ -103,6 +105,30 @@ namespace FortalezaServer.Controllers
                     .Include(e => e.IdclienteNavigation)
                         .ThenInclude(e => e.IdenderecoNavigation)
                     .LoadAsync();
+            }
+
+            if (pagamento)
+            {
+                await _context.Entry(pedido.IdvendaNavigation)
+                .Collection(e => e.Pagamento)
+                .LoadAsync();
+
+                if (pedido.IdvendaNavigation.Pagamento != null)
+                {
+                    if (pedido.IdvendaNavigation.Pagamento.Count > 0)
+                    {
+                        foreach (var pag in pedido.IdvendaNavigation.Pagamento)
+                        {
+                            await _context.Entry(pag)
+                                .Reference(e => e.IdmovimentoNavigation)
+                                .LoadAsync();
+
+                            await _context.Entry(pag.IdmovimentoNavigation)
+                                .Reference(e => e.IdformaPagamentoNavigation)
+                                .LoadAsync();
+                        }
+                    }
+                }
             }
 
 

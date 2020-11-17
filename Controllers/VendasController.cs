@@ -24,31 +24,33 @@ namespace FortalezaServer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Venda>>> GetVenda
             (
-            int tipo = 0,
-            bool filtroData = false,
-            DateTime filtroDataInicio = default,
-            DateTime filtroDataFinal = default
+                int tipo = -1,
+                bool abertas = false,
+                bool filtroData = false,
+                DateTime? dataInicial = null,
+                DateTime? dataFinal = null
             )
         {
-            List<Venda> vendas;
+            var query = _context.Venda
+                .Include(e => e.ItemVenda)
+                .AsQueryable();
 
-            if(tipo >= 0)
+            if (tipo >= 0)
             {
-                vendas = await _context.Venda.Where(e => e.Tipo == tipo)
-                    .Include(e => e.ItemVenda)
-                    .ToListAsync();
-            }
-            else
-            {
-                vendas = await _context.Venda
-                    .Include(e => e.ItemVenda)
-                    .ToListAsync();
+                query = query.Where(e => e.Tipo == tipo);
             }
 
             if(filtroData)
             {
-                vendas = vendas.Where(e => e.HoraEntrada > filtroDataInicio & e.HoraEntrada < filtroDataFinal).ToList();
+                query = query.Where(e => e.HoraEntrada > dataInicial & e.HoraEntrada < dataFinal);
             }
+
+            if(abertas)
+            {
+                query = query.Where(e => e.Aberta == 1);
+            }
+
+            var vendas = await query.ToListAsync();
 
             return vendas;
         }
@@ -115,6 +117,12 @@ namespace FortalezaServer.Controllers
             }
 
             return venda.Idvenda;
+        }
+
+        [HttpGet("actions/hasaberta")]
+        public async Task<ActionResult<bool>> HasVendaAberta()
+        {
+            return await _context.Venda.AnyAsync(e => e.Aberta == 1);
         }
 
         // PUT: api/Vendas/5
@@ -192,7 +200,7 @@ namespace FortalezaServer.Controllers
 
             if (venda.ValorPago > venda.ValorTotal)
             {
-                pagamento.IdmovimentoNavigation.Valor -= (venda.ValorPago ?? default) - venda.ValorTotal;
+                pagamento.IdmovimentoNavigation.Valor -= venda.ValorPago - venda.ValorTotal;
             }
 
             _context.Pagamento.Add(pagamento);

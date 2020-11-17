@@ -31,7 +31,7 @@ namespace FortalezaServer.Controllers
 
         // GET: api/Clientes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Cliente>> GetCliente(string id, bool cpf = false)
+        public async Task<ActionResult<Cliente>> GetCliente(string id, bool cpf = false, bool movimentos = false)
         {
             int _id = 0;
             if(!cpf)
@@ -67,6 +67,13 @@ namespace FortalezaServer.Controllers
             await _context.Entry(cliente)
                 .Reference(e => e.IdenderecoNavigation)
                 .LoadAsync();
+
+            if(movimentos)
+            {
+                await _context.Entry(cliente)
+                    .Collection(e => e.ClienteHasMovimento)
+                    .LoadAsync();
+            }
 
             return cliente;
         }

@@ -22,15 +22,41 @@ namespace FortalezaServer.Controllers
 
         // GET: api/Caixas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Caixa>>> GetCaixa()
+        public async Task<ActionResult<IEnumerable<Caixa>>> GetCaixa(
+            bool filtroData = false,
+            DateTime? dataInicial = null,
+            DateTime? dataFinal = null)
         {
-            return await _context.Caixa.ToListAsync();
+            List<Caixa> caixas = new List<Caixa>();
+
+            if (filtroData)
+            {
+                if(dataInicial != null & dataFinal != null)
+                {
+                    caixas = await _context.Caixa
+                    .Where(e => (e.HoraAbertura > dataInicial) & (e.HoraAbertura < dataFinal))
+                    .Include(e => e.IdresponsavelNavigation)
+                    .ToListAsync();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            else
+            {
+                caixas = await _context.Caixa
+                    .Include(e => e.IdresponsavelNavigation)
+                    .ToListAsync();
+            }
+            return caixas;
         }
 
         [HttpGet("actions/aberto")]
         public async Task<ActionResult<Caixa>> GetCaixaAberto(bool movimentos = false)
         {
             var caixa = await _context.Caixa.Where(e => e.Aberto == 1).FirstOrDefaultAsync();
+            
 
             if (caixa == null)
             {

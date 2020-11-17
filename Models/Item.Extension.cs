@@ -29,11 +29,11 @@ namespace FortalezaServer.Models
 
         public async Task LoadItemEstoqueAtual(fortalezaitdbContext dbcontext)
         {
-            if(Estoque == 1)
+            switch (Tipo)
             {
-                switch (Tipo)
-                {
-                    case "Produto":
+                case "Produto":
+                    if (Estoque == 1)
+                    {
                         var estoqueDisponivel = await dbcontext.Entry(this)
                             .Collection(e => e.ItemHasEstoque)
                             .Query()
@@ -42,39 +42,35 @@ namespace FortalezaServer.Models
                                 .OrderBy(e => e.IdestoqueNavigation.HoraEntrada)
                             .ToListAsync();
                         EstoqueAtual = new Estoque();
-                        if(estoqueDisponivel != null)
+                        if (estoqueDisponivel != null)
                         {
-                            if(estoqueDisponivel.Count > 0)
+                            if (estoqueDisponivel.Count > 0)
                             {
                                 EstoqueAtual.Custo = estoqueDisponivel.First().IdestoqueNavigation.Custo;
                                 EstoqueAtual.QuantidadeDisponivel = estoqueDisponivel.Sum(e => e.IdestoqueNavigation.QuantidadeDisponivel);
                             }
                         }
-                        break;
-                    case "Pacote":
-                        if (PacoteIditemNavigation == null)
-                        {
-                            await LoadItemTipo(dbcontext);
-                        }
-                        if(PacoteIditemNavigation != null)
+                        
+                    }
+                    break;
+                case "Pacote":
+                    if (PacoteIditemNavigation == null)
+                    {
+                        await LoadItemTipo(dbcontext);
+                    }
+                    if (PacoteIditemNavigation != null)
+                    {
+                        if (PacoteIditemNavigation.IditemProdutoNavigation.Estoque == 1)
                         {
                             await PacoteIditemNavigation.IditemProdutoNavigation.LoadItemEstoqueAtual(dbcontext);
-                        }
-                        
-                        
-                        if(PacoteIditemNavigation != null)
-                        {
-                            if(PacoteIditemNavigation.IditemProdutoNavigation.Estoque == 1)
+                            EstoqueAtual = new Estoque
                             {
-                                EstoqueAtual = new Estoque
-                                {
-                                    Custo = PacoteIditemNavigation.IditemProdutoNavigation.EstoqueAtual.Custo * PacoteIditemNavigation.Quantidade,
-                                    QuantidadeDisponivel = PacoteIditemNavigation.IditemProdutoNavigation.EstoqueAtual.QuantidadeDisponivel / PacoteIditemNavigation.Quantidade
-                                };
-                            }
+                                Custo = PacoteIditemNavigation.IditemProdutoNavigation.EstoqueAtual.Custo * PacoteIditemNavigation.Quantidade,
+                                QuantidadeDisponivel = PacoteIditemNavigation.IditemProdutoNavigation.EstoqueAtual.QuantidadeDisponivel / PacoteIditemNavigation.Quantidade
+                            };
                         }
-                        break;
-                }
+                    }
+                    break;
             }
         }
 
@@ -161,6 +157,8 @@ namespace FortalezaServer.Models
                     estoqueDisponivel.Disponivel = 0;
                 }
 
+                dbcontext.Entry(estoqueDisponivel).State = EntityState.Modified;
+                await dbcontext.SaveChangesAsync();
             }
             else
             {
@@ -174,11 +172,15 @@ namespace FortalezaServer.Models
                 estoqueDisponivel.QuantidadeDisponivel = 0;
                 estoqueDisponivel.Disponivel = 0;
                 estoquesDisponiveis.RemoveAt(0);
-                Custos.AddRange(await AtualizarEstoqueDisponivel(quantity, estoquesDisponiveis, dbcontext));
-            }
 
-            dbcontext.Entry(estoqueDisponivel).State = EntityState.Modified;
-            await dbcontext.SaveChangesAsync();
+                dbcontext.Entry(estoqueDisponivel).State = EntityState.Modified;
+                await dbcontext.SaveChangesAsync();
+
+                if (estoquesDisponiveis.Count > 0)
+                {
+                    Custos.AddRange(await AtualizarEstoqueDisponivel(quantity, estoquesDisponiveis, dbcontext));
+                }
+            }
             return Custos;
         }
     }

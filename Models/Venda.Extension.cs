@@ -93,6 +93,7 @@ namespace FortalezaServer.Models
             //Check for Combo and Adicionais
 
             itemVenda.IditemNavigation = null;
+            itemVenda.Cancelado = 0;
 
             ItemVenda.Add(itemVenda);
             await dbcontext.SaveChangesAsync();

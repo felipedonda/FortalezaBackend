@@ -7,12 +7,13 @@ namespace FortalezaServer.Models
     {
         public int IdinformacoesEmpresa { get; set; }
         public string NomeFantasia { get; set; }
-        public int? Ie { get; set; }
-        public int? Cnpj { get; set; }
         public string RazaoSocial { get; set; }
+        public string Rg { get; set; }
+        public string Cpf { get; set; }
         public int? Idendereco { get; set; }
         public int? RegimeTributario { get; set; }
-        public int? Cnae { get; set; }
+        public string Cnae { get; set; }
+        public string Logo { get; set; }
 
         public virtual Endereco IdenderecoNavigation { get; set; }
     }

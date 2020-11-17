@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Logging;
 
 namespace FortalezaServer.Models
 {
@@ -55,12 +54,10 @@ namespace FortalezaServer.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseMySQL("server=172.17.0.3;port=3306;user=fortalezait_dbuser;password=fortalezait@;database=fortalezaitdb");
-                optionsBuilder.UseLoggerFactory(MyLoggerFactory);
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+                optionsBuilder.UseMySQL("server=localhost;port=3306;user=fortalezait_dbuser;password=fortalezait@;database=fortalezaitdb");
             }
         }
-
-        public static readonly ILoggerFactory MyLoggerFactory = LoggerFactory.Create(builder => { builder.AddConsole(); });
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -605,13 +602,23 @@ namespace FortalezaServer.Models
 
                 entity.Property(e => e.IdinformacoesEmpresa).HasColumnName("idinformacoes_empresa");
 
-                entity.Property(e => e.Cnae).HasColumnName("cnae");
+                entity.Property(e => e.Cnae)
+                    .HasColumnName("cnae")
+                    .HasMaxLength(7)
+                    .IsUnicode(false);
 
-                entity.Property(e => e.Cnpj).HasColumnName("cnpj");
+                entity.Property(e => e.Cpf)
+                    .IsRequired()
+                    .HasColumnName("cpf")
+                    .HasMaxLength(14)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Idendereco).HasColumnName("idendereco");
 
-                entity.Property(e => e.Ie).HasColumnName("ie");
+                entity.Property(e => e.Logo)
+                    .HasColumnName("logo")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.NomeFantasia)
                     .IsRequired()
@@ -620,11 +627,18 @@ namespace FortalezaServer.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.RazaoSocial)
+                    .IsRequired()
                     .HasColumnName("razao_social")
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
                 entity.Property(e => e.RegimeTributario).HasColumnName("regime_tributario");
+
+                entity.Property(e => e.Rg)
+                    .IsRequired()
+                    .HasColumnName("rg")
+                    .HasMaxLength(9)
+                    .IsUnicode(false);
 
                 entity.HasOne(d => d.IdenderecoNavigation)
                     .WithMany(p => p.InformacoesEmpresa)
@@ -640,6 +654,8 @@ namespace FortalezaServer.Models
                 entity.ToTable("item");
 
                 entity.Property(e => e.Iditem).HasColumnName("iditem");
+
+                entity.Property(e => e.Atacado).HasColumnName("atacado");
 
                 entity.Property(e => e.CodigoBarras).HasColumnName("codigo_barras");
 
@@ -668,15 +684,11 @@ namespace FortalezaServer.Models
                     .HasColumnName("permite_combo")
                     .HasDefaultValueSql("'1'");
 
-                entity.Property(e => e.QuantidadeVarejo)
-                    .HasColumnName("quantidade_varejo")
+                entity.Property(e => e.QuantidadeAtacado)
+                    .HasColumnName("quantidade_atacado")
                     .HasColumnType("decimal(12,3)");
 
-                entity.Property(e => e.Tipo)
-                    .IsRequired()
-                    .HasColumnName("tipo")
-                    .HasMaxLength(45)
-                    .IsUnicode(false);
+                entity.Property(e => e.Tipo).HasColumnName("tipo");
 
                 entity.Property(e => e.Unidade)
                     .IsRequired()
@@ -692,11 +704,9 @@ namespace FortalezaServer.Models
                     .HasColumnName("valor")
                     .HasColumnType("decimal(11,2)");
 
-                entity.Property(e => e.ValorVarejo)
-                    .HasColumnName("valor_varejo")
+                entity.Property(e => e.ValorAtacado)
+                    .HasColumnName("valor_atacado")
                     .HasColumnType("decimal(11,2)");
-
-                entity.Property(e => e.Varejo).HasColumnName("varejo");
 
                 entity.Property(e => e.Visivel)
                     .HasColumnName("visivel")
@@ -802,6 +812,8 @@ namespace FortalezaServer.Models
 
                 entity.Property(e => e.IditemVenda).HasColumnName("iditem_venda");
 
+                entity.Property(e => e.Cancelado).HasColumnName("cancelado");
+
                 entity.Property(e => e.Custo)
                     .HasColumnName("custo")
                     .HasColumnType("decimal(11,2)");
@@ -882,11 +894,7 @@ namespace FortalezaServer.Models
 
                 entity.Property(e => e.IdformaPagamento).HasColumnName("idforma_pagamento");
 
-                entity.Property(e => e.Tipo)
-                    .IsRequired()
-                    .HasColumnName("tipo")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.Tipo).HasColumnName("tipo");
 
                 entity.Property(e => e.Valor)
                     .HasColumnName("valor")
@@ -1151,6 +1159,7 @@ namespace FortalezaServer.Models
                 entity.HasOne(d => d.IdenderecoNavigation)
                     .WithMany(p => p.Usuario)
                     .HasForeignKey(d => d.Idendereco)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("fk_usuario_endereco1");
             });
 
@@ -1173,10 +1182,6 @@ namespace FortalezaServer.Models
 
                 entity.Property(e => e.Acrescimo)
                     .HasColumnName("acrescimo")
-                    .HasColumnType("decimal(11,2)");
-
-                entity.Property(e => e.CustoTotal)
-                    .HasColumnName("custo_total")
                     .HasColumnType("decimal(11,2)");
 
                 entity.Property(e => e.Desconto)
@@ -1209,6 +1214,7 @@ namespace FortalezaServer.Models
                 entity.HasOne(d => d.IdclienteNavigation)
                     .WithMany(p => p.Venda)
                     .HasForeignKey(d => d.Idcliente)
+                    .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("fk_venda_cliente1");
 
                 entity.HasOne(d => d.IdresponsavelNavigation)

@@ -14,7 +14,7 @@ namespace FortalezaServer.Models
         public int Idmovimento { get; set; }
         public DateTime HoraEntrada { get; set; }
         public string Descricao { get; set; }
-        public string Tipo { get; set; }
+        public int Tipo { get; set; }
         public decimal Valor { get; set; }
         public int? IdformaPagamento { get; set; }
         public int? Idcaixa { get; set; }

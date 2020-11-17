@@ -13,12 +13,6 @@ namespace FortalezaServer
     {
         public static void Main(string[] args)
         {
-           /*
-            if (!DbInitialData.InitiateDb())
-            {
-                DbInitialData.InsertInitialData();
-            }
-           */
             CreateHostBuilder(args).Build().Run();
         }
 
