@@ -1,0 +1,25 @@
+2021-03-25 20:25:14.350 -03:00 [INF] Starting web host
+2021-03-25 20:25:15.423 -03:00 [INF] Now listening on: http://[::]:8000
+2021-03-25 20:25:15.430 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-03-25 20:25:15.432 -03:00 [INF] Hosting environment: Development
+2021-03-25 20:25:15.434 -03:00 [INF] Content root path: C:\Users\felip\source\repos\FortalezaServer
+2021-03-25 20:25:19.877 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/fiscal/cfe-venda/2  
+2021-03-25 20:25:19.919 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.FiscalController.GetAsync (FortalezaServer)'
+2021-03-25 20:25:19.954 -03:00 [INF] Route matched with {action = "Get", controller = "Fiscal"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[System.String] GetAsync(Int32) on controller FortalezaServer.Controllers.FiscalController (FortalezaServer).
+2021-03-25 20:25:20.710 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-03-25 20:25:21.252 -03:00 [INF] Executed DbCommand (7ms) [Parameters=[@__id_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `v`.`idvenda`, `v`.`aberta`, `v`.`acrescimo`, `v`.`desconto`, `v`.`descricao`, `v`.`hora_entrada`, `v`.`hora_fechamento`, `v`.`idcaixa`, `v`.`idcliente`, `v`.`idpdv`, `v`.`idresponsavel`, `v`.`numero_venda`, `v`.`paga`, `v`.`tipo`, `v`.`valor_pago`, `c`.`idcaixa`, `c`.`aberto`, `c`.`idnome_caixa`, `n`.`idnome_caixa`, `n`.`nome`
+FROM `venda` AS `v`
+INNER JOIN `caixa` AS `c` ON `v`.`idcaixa` = `c`.`idcaixa`
+INNER JOIN `nome_caixa` AS `n` ON `c`.`idnome_caixa` = `n`.`idnome_caixa`
+WHERE `v`.`idvenda` = @__id_0
+LIMIT 1
+2021-03-25 20:25:21.359 -03:00 [INF] Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `i`.`idinformacoes_empresa`, `i`.`cnae`, `i`.`cpf`, `i`.`idendereco`, `i`.`logo`, `i`.`nome_fantasia`, `i`.`razao_social`, `i`.`regime_tributario`, `i`.`rg`
+FROM `informacoes_empresa` AS `i`
+WHERE `i`.`idinformacoes_empresa` = @__p_0
+LIMIT 1
+2021-03-25 20:25:21.376 -03:00 [INF] Executing ObjectResult, writing value of type 'System.String'.
+2021-03-25 20:25:21.384 -03:00 [INF] Executed action FortalezaServer.Controllers.FiscalController.GetAsync (FortalezaServer) in 1423.5623ms
+2021-03-25 20:25:21.387 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.FiscalController.GetAsync (FortalezaServer)'
+2021-03-25 20:25:21.392 -03:00 [INF] Request finished in 1518.5992ms 200 text/plain; charset=utf-8

@@ -102,6 +102,23 @@ namespace FortalezaServer.Controllers
         [HttpPost]
         public async Task<ActionResult<Movimento>> PostMovimento(Movimento movimento)
         {
+            //Removendo as Navigations para evitar duplicação no banco de dados
+            movimento.HoraEntrada = DateTime.Now;
+            movimento.Idusuario = movimento.IdusuarioNavigation.Idusuario;
+            movimento.IdusuarioNavigation = null;
+            movimento.Idcaixa = movimento.IdcaixaNavigation.Idcaixa;
+            movimento.IdcaixaNavigation = null;
+            movimento.Idpdv = movimento.IdpdvNavigation.Idpdv;
+            movimento.IdpdvNavigation = null;
+            movimento.IdformaPagamento = movimento.IdformaPagamentoNavigation.IdformaPagamento;
+            movimento.IdformaPagamentoNavigation = null;
+            if (movimento.IdbandeiraNavigation != null)
+            {
+                movimento.Idbandeira = movimento.IdbandeiraNavigation.Idbandeira;
+                movimento.IdbandeiraNavigation = null;
+            }
+
+
             _context.Movimento.Add(movimento);
             await _context.SaveChangesAsync();
 
@@ -129,6 +146,7 @@ namespace FortalezaServer.Controllers
                 var pagamento = movimento.Pagamento.FirstOrDefault();
                 pagamento.IdvendaNavigation.ValorPago -= movimento.Valor;
                 _context.Entry(pagamento.IdvendaNavigation).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
             }
 
             _context.Movimento.Remove(movimento);

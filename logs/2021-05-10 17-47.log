@@ -1,0 +1,5 @@
+2021-05-10 17:47:49.412 -03:00 [INF] Starting web host
+2021-05-10 17:47:51.212 -03:00 [INF] Now listening on: http://[::]:8000
+2021-05-10 17:47:51.219 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-05-10 17:47:51.220 -03:00 [INF] Hosting environment: Development
+2021-05-10 17:47:51.221 -03:00 [INF] Content root path: C:\Users\felip\source\repos\FortalezaServer

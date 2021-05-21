@@ -1,0 +1,54 @@
+2021-03-25 13:08:48.625 -03:00 [INF] Starting web host
+2021-03-25 13:08:49.790 -03:00 [INF] Now listening on: http://[::]:8000
+2021-03-25 13:08:49.795 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-03-25 13:08:49.796 -03:00 [INF] Hosting environment: Development
+2021-03-25 13:08:49.797 -03:00 [INF] Content root path: C:\Users\felip\source\repos\FortalezaServer
+2021-03-25 13:09:01.256 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/fiscal/cfe-venda/2  
+2021-03-25 13:09:01.301 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.FiscalController.GetAsync (FortalezaServer)'
+2021-03-25 13:09:01.341 -03:00 [INF] Route matched with {action = "Get", controller = "Fiscal"}. Executing controller action with signature System.Threading.Tasks.Task`1[System.String] GetAsync(Int32) on controller FortalezaServer.Controllers.FiscalController (FortalezaServer).
+2021-03-25 13:09:02.203 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-03-25 13:09:02.734 -03:00 [INF] Executed DbCommand (7ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `v`.`idvenda`, `v`.`aberta`, `v`.`acrescimo`, `v`.`desconto`, `v`.`descricao`, `v`.`hora_entrada`, `v`.`hora_fechamento`, `v`.`idcaixa`, `v`.`idcliente`, `v`.`idpdv`, `v`.`idresponsavel`, `v`.`numero_venda`, `v`.`paga`, `v`.`tipo`, `v`.`valor_pago`
+FROM `venda` AS `v`
+WHERE `v`.`idvenda` = @__p_0
+LIMIT 1
+2021-03-25 13:09:02.892 -03:00 [INF] Executed action FortalezaServer.Controllers.FiscalController.GetAsync (FortalezaServer) in 1545.7837ms
+2021-03-25 13:09:02.896 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.FiscalController.GetAsync (FortalezaServer)'
+2021-03-25 13:09:02.899 -03:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: Cannot set a value on node type 'Element'.
+   at System.Xml.XmlNode.set_Value(String value)
+   at FortalezaServer.Controllers.FiscalController.GerarCfe(Venda venda) in C:\Users\felip\source\repos\FortalezaServer\Controllers\FiscalController.cs:line 32
+   at FortalezaServer.Controllers.FiscalController.GetAsync(Int32 id) in C:\Users\felip\source\repos\FortalezaServer\Controllers\FiscalController.cs:line 54
+   at lambda_method(Closure , Object )
+   at Microsoft.Extensions.Internal.ObjectMethodExecutorAwaitable.Awaiter.GetResult()
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2021-03-25 13:09:02.993 -03:00 [INF] Request finished in 1739.1798ms 500 text/html; charset=utf-8
+2021-03-25 14:28:08.999 -03:00 [INF] Request starting HTTP/1.0 HEAD http:///  
+2021-03-25 14:28:09.001 -03:00 [INF] Request finished in 1.9311ms 404 
+2021-03-25 14:59:11.061 -03:00 [INF] Request starting HTTP/1.0 HEAD http:///  
+2021-03-25 14:59:11.063 -03:00 [INF] Request finished in 2.4962ms 404 
+2021-03-25 15:03:11.245 -03:00 [INF] Request starting HTTP/1.0 HEAD http:///  
+2021-03-25 15:03:11.247 -03:00 [INF] Request finished in 2.361ms 404 
+2021-03-25 17:19:28.126 -03:00 [INF] Request starting HTTP/1.1 GET http://189.62.217.224:8000/  
+2021-03-25 17:19:28.131 -03:00 [INF] Request finished in 4.325ms 404 
+2021-03-25 17:36:23.845 -03:00 [INF] Request starting HTTP/1.0 GET http://189.62.217.224/  
+2021-03-25 17:36:23.848 -03:00 [INF] Request finished in 1.722ms 404 
+2021-03-25 17:49:48.106 -03:00 [INF] Request starting HTTP/1.0 HEAD http:///  
+2021-03-25 17:49:48.107 -03:00 [INF] Request finished in 1.5407ms 404 
+2021-03-25 18:53:16.658 -03:00 [INF] Request starting HTTP/1.0 HEAD http:///  
+2021-03-25 18:53:16.661 -03:00 [INF] Request finished in 1.4535ms 404 
+2021-03-25 19:19:18.617 -03:00 [INF] Request starting HTTP/1.0 HEAD http:///  
+2021-03-25 19:19:18.620 -03:00 [INF] Request finished in 2.1099ms 404 
+2021-03-25 20:07:11.435 -03:00 [INF] Request starting HTTP/1.1 POST http://189.62.217.224:8000/_ignition/execute-solution application/json 155
+2021-03-25 20:07:11.444 -03:00 [INF] Request finished in 8.8342ms 404 

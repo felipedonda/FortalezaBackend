@@ -19,7 +19,6 @@
     },
     "FortalezaServer": {
       "commandName": "Project",
-      "launchBrowser": true,
       "launchUrl": "api/status",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

@@ -1,0 +1,105 @@
+2021-02-19 17:06:26.578 -03:00 [INF] Starting web host
+2021-02-19 17:06:27.806 -03:00 [INF] Now listening on: http://[::]:8000
+2021-02-19 17:06:27.821 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-02-19 17:06:27.824 -03:00 [INF] Hosting environment: Development
+2021-02-19 17:06:27.825 -03:00 [INF] Content root path: C:\Users\felip\source\repos\FortalezaServer
+2021-02-19 17:06:28.842 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/status  
+2021-02-19 17:06:28.905 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.IndexController.GetStatus (FortalezaServer)'
+2021-02-19 17:06:28.957 -03:00 [INF] Route matched with {action = "GetStatus", controller = "Index"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[FortalezaServer.Controllers.IndexController+Status]] GetStatus() on controller FortalezaServer.Controllers.IndexController (FortalezaServer).
+2021-02-19 17:06:29.939 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-02-19 17:06:30.272 -03:00 [INF] Executing ObjectResult, writing value of type 'FortalezaServer.Controllers.IndexController+Status'.
+2021-02-19 17:06:30.385 -03:00 [INF] Executed action FortalezaServer.Controllers.IndexController.GetStatus (FortalezaServer) in 1421.4109ms
+2021-02-19 17:06:30.389 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.IndexController.GetStatus (FortalezaServer)'
+2021-02-19 17:06:30.393 -03:00 [INF] Request finished in 1556.1298ms 200 application/json; charset=utf-8
+2021-02-19 17:06:32.016 -03:00 [INF] Request starting HTTP/1.1 PUT http://localhost:8000/api/bandeiras/7 application/json; charset=utf-8 112
+2021-02-19 17:06:32.020 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.BandeirasController.PutBandeira (FortalezaServer)'
+2021-02-19 17:06:32.031 -03:00 [INF] Route matched with {action = "PutBandeira", controller = "Bandeiras"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] PutBandeira(Int32, FortalezaServer.Models.Bandeira) on controller FortalezaServer.Controllers.BandeirasController (FortalezaServer).
+2021-02-19 17:06:32.124 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-02-19 17:06:32.322 -03:00 [INF] Executed DbCommand (3ms) [Parameters=[@__bandeira_Ordem_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `b`.`idbandeira`, `b`.`nome`, `b`.`ordem`, `b`.`prazo1`, `b`.`prazo2`, `b`.`taxa1`, `b`.`taxa2`
+FROM `bandeira` AS `b`
+WHERE `b`.`ordem` = @__bandeira_Ordem_0
+LIMIT 1
+2021-02-19 17:06:32.454 -03:00 [INF] Executed action FortalezaServer.Controllers.BandeirasController.PutBandeira (FortalezaServer) in 421.1594ms
+2021-02-19 17:06:32.457 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.BandeirasController.PutBandeira (FortalezaServer)'
+2021-02-19 17:06:32.460 -03:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The instance of entity type 'Bandeira' cannot be tracked because another instance with the same key value for {'Idbandeira'} is already being tracked. When attaching existing entities, ensure that only one entity instance with a given key value is attached. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see the conflicting key values.
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.IdentityMap`1.ThrowIdentityConflict(InternalEntityEntry entry)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.IdentityMap`1.Add(TKey key, InternalEntityEntry entry, Boolean updateDuplicate)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.IdentityMap`1.Add(TKey key, InternalEntityEntry entry)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.IdentityMap`1.Add(InternalEntityEntry entry)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.StartTracking(InternalEntityEntry entry)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.SetEntityState(EntityState oldState, EntityState newState, Boolean acceptChanges, Boolean modifyProperties)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.SetEntityState(EntityState entityState, Boolean acceptChanges, Boolean modifyProperties, Nullable`1 forceStateWhenUnknownKey)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry.set_State(EntityState value)
+   at FortalezaServer.Controllers.BandeirasController.PutBandeira(Int32 id, Bandeira bandeira) in C:\Users\felip\source\repos\FortalezaServer\Controllers\BandeirasController.cs:line 74
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2021-02-19 17:06:32.524 -03:00 [INF] Request finished in 507.7436ms 500 text/plain
+2021-02-19 17:06:36.909 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/bandeiras/7  
+2021-02-19 17:06:36.910 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.BandeirasController.GetBandeira (FortalezaServer)'
+2021-02-19 17:06:36.915 -03:00 [INF] Route matched with {action = "GetBandeira", controller = "Bandeiras"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[FortalezaServer.Models.Bandeira]] GetBandeira(Int32) on controller FortalezaServer.Controllers.BandeirasController (FortalezaServer).
+2021-02-19 17:06:36.944 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-02-19 17:06:36.973 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `b`.`idbandeira`, `b`.`nome`, `b`.`ordem`, `b`.`prazo1`, `b`.`prazo2`, `b`.`taxa1`, `b`.`taxa2`
+FROM `bandeira` AS `b`
+WHERE `b`.`idbandeira` = @__p_0
+LIMIT 1
+2021-02-19 17:06:36.980 -03:00 [INF] Executing ObjectResult, writing value of type 'FortalezaServer.Models.Bandeira'.
+2021-02-19 17:06:36.986 -03:00 [INF] Executed action FortalezaServer.Controllers.BandeirasController.GetBandeira (FortalezaServer) in 68.4314ms
+2021-02-19 17:06:36.988 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.BandeirasController.GetBandeira (FortalezaServer)'
+2021-02-19 17:06:36.990 -03:00 [INF] Request finished in 81.4622ms 200 application/json; charset=utf-8
+2021-02-19 17:06:40.779 -03:00 [INF] Request starting HTTP/1.1 PUT http://localhost:8000/api/bandeiras/7 application/json; charset=utf-8 112
+2021-02-19 17:06:40.781 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.BandeirasController.PutBandeira (FortalezaServer)'
+2021-02-19 17:06:40.783 -03:00 [INF] Route matched with {action = "PutBandeira", controller = "Bandeiras"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] PutBandeira(Int32, FortalezaServer.Models.Bandeira) on controller FortalezaServer.Controllers.BandeirasController (FortalezaServer).
+2021-02-19 17:06:40.790 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-02-19 17:06:40.796 -03:00 [INF] Executed DbCommand (0ms) [Parameters=[@__bandeira_Ordem_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `b`.`idbandeira`, `b`.`nome`, `b`.`ordem`, `b`.`prazo1`, `b`.`prazo2`, `b`.`taxa1`, `b`.`taxa2`
+FROM `bandeira` AS `b`
+WHERE `b`.`ordem` = @__bandeira_Ordem_0
+LIMIT 1
+2021-02-19 17:06:40.832 -03:00 [INF] Executed action FortalezaServer.Controllers.BandeirasController.PutBandeira (FortalezaServer) in 44.4114ms
+2021-02-19 17:06:40.834 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.BandeirasController.PutBandeira (FortalezaServer)'
+2021-02-19 17:06:40.835 -03:00 [ERR] An unhandled exception has occurred while executing the request.
+System.InvalidOperationException: The instance of entity type 'Bandeira' cannot be tracked because another instance with the same key value for {'Idbandeira'} is already being tracked. When attaching existing entities, ensure that only one entity instance with a given key value is attached. Consider using 'DbContextOptionsBuilder.EnableSensitiveDataLogging' to see the conflicting key values.
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.IdentityMap`1.ThrowIdentityConflict(InternalEntityEntry entry)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.IdentityMap`1.Add(TKey key, InternalEntityEntry entry, Boolean updateDuplicate)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.IdentityMap`1.Add(TKey key, InternalEntityEntry entry)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.IdentityMap`1.Add(InternalEntityEntry entry)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.StateManager.StartTracking(InternalEntityEntry entry)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.SetEntityState(EntityState oldState, EntityState newState, Boolean acceptChanges, Boolean modifyProperties)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.Internal.InternalEntityEntry.SetEntityState(EntityState entityState, Boolean acceptChanges, Boolean modifyProperties, Nullable`1 forceStateWhenUnknownKey)
+   at Microsoft.EntityFrameworkCore.ChangeTracking.EntityEntry.set_State(EntityState value)
+   at FortalezaServer.Controllers.BandeirasController.PutBandeira(Int32 id, Bandeira bandeira) in C:\Users\felip\source\repos\FortalezaServer\Controllers\BandeirasController.cs:line 74
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.InvokeInnerFilterAsync()
+--- End of stack trace from previous location where exception was thrown ---
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|19_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Logged|17_1(ResourceInvoker invoker)
+   at Microsoft.AspNetCore.Routing.EndpointMiddleware.<Invoke>g__AwaitRequestTask|6_0(Endpoint endpoint, Task requestTask, ILogger logger)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Diagnostics.DeveloperExceptionPageMiddleware.Invoke(HttpContext context)
+2021-02-19 17:06:40.849 -03:00 [INF] Request finished in 70.1117ms 500 text/plain
+2021-02-19 17:07:04.706 -03:00 [INF] Request starting HTTP/1.1 PUT http://localhost:8000/api/bandeiras/7 application/json; charset=utf-8 112
+2021-02-19 17:07:04.708 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.BandeirasController.PutBandeira (FortalezaServer)'
+2021-02-19 17:07:04.710 -03:00 [INF] Route matched with {action = "PutBandeira", controller = "Bandeiras"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] PutBandeira(Int32, FortalezaServer.Models.Bandeira) on controller FortalezaServer.Controllers.BandeirasController (FortalezaServer).
+2021-02-19 17:07:04.716 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-02-19 17:07:04.721 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__bandeira_Ordem_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `b`.`idbandeira`, `b`.`nome`, `b`.`ordem`, `b`.`prazo1`, `b`.`prazo2`, `b`.`taxa1`, `b`.`taxa2`
+FROM `bandeira` AS `b`
+WHERE `b`.`ordem` = @__bandeira_Ordem_0
+LIMIT 1

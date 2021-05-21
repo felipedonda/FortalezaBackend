@@ -1,0 +1,25 @@
+2021-05-12 16:08:59.592 -03:00 [INF] Starting web host
+2021-05-12 16:09:00.638 -03:00 [INF] Now listening on: http://[::]:8000
+2021-05-12 16:09:00.643 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-05-12 16:09:00.644 -03:00 [INF] Hosting environment: Development
+2021-05-12 16:09:00.645 -03:00 [INF] Content root path: C:\Users\felip\source\repos\FortalezaServer
+2021-05-12 16:09:06.000 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/fiscal/cfe-test  
+2021-05-12 16:09:06.042 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.FiscalController.GetCfeTestAsync (FortalezaServer)'
+2021-05-12 16:09:06.069 -03:00 [INF] Route matched with {action = "GetCfeTest", controller = "Fiscal"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[System.String] GetCfeTestAsync() on controller FortalezaServer.Controllers.FiscalController (FortalezaServer).
+2021-05-12 16:09:06.199 -03:00 [INF] Executing ObjectResult, writing value of type 'System.String'.
+2021-05-12 16:09:06.211 -03:00 [INF] Executed action FortalezaServer.Controllers.FiscalController.GetCfeTestAsync (FortalezaServer) in 136.1941ms
+2021-05-12 16:09:06.215 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.FiscalController.GetCfeTestAsync (FortalezaServer)'
+2021-05-12 16:09:06.217 -03:00 [INF] Request finished in 218.8502ms 200 text/plain; charset=utf-8
+2021-05-12 17:34:41.378 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/vendas  
+2021-05-12 17:34:41.383 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.VendasController.GetVenda (FortalezaServer)'
+2021-05-12 17:34:41.403 -03:00 [INF] Route matched with {action = "GetVenda", controller = "Vendas"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.IEnumerable`1[FortalezaServer.Models.Venda]]] GetVenda(Int32, Boolean, Boolean, System.String, System.String, System.String) on controller FortalezaServer.Controllers.VendasController (FortalezaServer).
+2021-05-12 17:34:42.051 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-05-12 17:34:42.734 -03:00 [INF] Executed DbCommand (34ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT `v`.`idvenda`, `v`.`aberta`, `v`.`acrescimo`, `v`.`desconto`, `v`.`descricao`, `v`.`hora_entrada`, `v`.`hora_fechamento`, `v`.`idcaixa`, `v`.`idcliente`, `v`.`idpdv`, `v`.`idresponsavel`, `v`.`numero_venda`, `v`.`paga`, `v`.`tipo`, `v`.`valor_pago`, `i`.`iditem_venda`, `i`.`Acrescimo`, `i`.`cancelado`, `i`.`custo`, `i`.`Desconto`, `i`.`iditem`, `i`.`idvenda`, `i`.`indice`, `i`.`quantidade`, `i`.`valor`
+FROM `venda` AS `v`
+LEFT JOIN `item_venda` AS `i` ON `v`.`idvenda` = `i`.`idvenda`
+ORDER BY `v`.`idvenda`, `i`.`iditem_venda`
+2021-05-12 17:34:42.748 -03:00 [INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[FortalezaServer.Models.Venda, FortalezaServer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2021-05-12 17:34:42.842 -03:00 [INF] Executed action FortalezaServer.Controllers.VendasController.GetVenda (FortalezaServer) in 1436.5727ms
+2021-05-12 17:34:42.844 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.VendasController.GetVenda (FortalezaServer)'
+2021-05-12 17:34:42.847 -03:00 [INF] Request finished in 1469.5079ms 200 application/json; charset=utf-8

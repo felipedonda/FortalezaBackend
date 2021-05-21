@@ -27,34 +27,94 @@ namespace FortalezaServer.Controllers
             (
                 bool estoqueAtual = false,
                 bool estoqueOnly = false,
-                bool visivelOnly = true
+                bool visivelOnly = true,
+                string query = ""
             )
         {
-            List<Item> items = null;
 
-            if (estoqueOnly)
+            List<Item> queryResult = new List<Item>();
+
+            if (string.IsNullOrEmpty(query))
             {
-                items = await _context.Item
-                    .Where(e => e.Estoque == 1)
-                    .ToListAsync();
+
+                var items = _context.Item.AsQueryable();
+
+                if (estoqueOnly)
+                {
+                    items = items.Where(e => e.Estoque == 1);
+                }
+
+                if (visivelOnly)
+                {
+                    items = items.Where(e => e.Visivel == 1);
+                }
+
+                queryResult = await items.ToListAsync();
+            }
+            else
+            {
+                List<int> queryItems = await _context.Item
+                    .Where(e => e.Descricao.Contains(query))
+                    .Select(e => e.Iditem).ToListAsync();
+
+                int leadingZeros = 0;
+                string ldzAux = "";
+                for (int i = 0; i < query.Length; i++)
+                {
+                    if (query[i] == '0')
+                    {
+                        leadingZeros++;
+                        ldzAux += '0';
+                    }
+                    else
+                    {
+                        i = query.Length;
+                    }
+                }
+
+                if (query.Length != leadingZeros)
+                {
+                    queryItems.AddRange(await _context.Item
+                        .Where(e => e.Iditem.ToString().Contains(query.Substring(leadingZeros)))
+                        .Select(e => e.Iditem).ToListAsync());
+                }
+
+                queryItems.AddRange(await _context.Item
+                    .Where(e => (ldzAux + e.Iditem.ToString()).Contains(query))
+                    .Select(e => e.Iditem).ToListAsync());
+
+                queryItems.AddRange(await _context.Item
+                    .Where(e => e.CodigoBarras.Contains(query))
+                    .Select(e => e.Iditem).ToListAsync()); ;
+
+                if (queryItems.Count > 0)
+                {
+                    List<int> sortedItems = queryItems.GroupBy(e => e).OrderBy(e => e.Count()).Select(e => e.Key).ToList();
+                    foreach (int iditem in sortedItems)
+                    {
+                        queryResult.Add(await _context.Item.FindAsync(iditem));
+                    }
+                    return queryResult;
+                }
+                else
+                {
+                    return null;
+                }
             }
 
-            if(items == null & visivelOnly)
+            if (estoqueAtual)
             {
-                items = await _context.Item.Where(e => e.Visivel == 1).ToListAsync();
-            }
-            
-            if(items == null)
-            {
-                items = await _context.Item.ToListAsync();
+                queryResult.ForEach(async e => await e.LoadItemEstoqueAtual(_context));
             }
 
-            if(estoqueAtual)
-            {
-                items.ForEach(async e => await e.LoadItemEstoqueAtual(_context));
-            }
+            queryResult.ForEach(async e =>
+                await _context.Entry(e)
+                    .Reference(f => f.Fiscal)
+                    .LoadAsync()
+            );
+                
 
-            return items;
+            return queryResult;
         }
 
         // GET: api/Items/5
@@ -69,12 +129,16 @@ namespace FortalezaServer.Controllers
         {
             var item = await _context.Item.FindAsync(id);
 
+            await _context.Entry(item)
+                .Reference(e => e.Fiscal)
+                .LoadAsync();
+
             if (item == null)
             {
                 return NotFound();
             }
 
-            if(grupos)
+            if (grupos)
             {
                 await _context.Entry(item)
                     .Collection(e => e.ItemHasGrupo)
@@ -88,13 +152,13 @@ namespace FortalezaServer.Controllers
                 await item.LoadItemTipo(_context);
             }
 
-            if(estoqueAtual && item.Estoque == 1)
+            if (estoqueAtual && item.Estoque == 1)
             {
                 await item.LoadItemEstoqueAtual(_context);
             }
 
 
-            if (estoque && item.Estoque == 1 && item.Tipo == "Produto")
+            if (estoque && item.Estoque == 1 && item.Tipo == 1)
             {
                 await _context.Entry(item)
                     .Collection(e => e.ItemHasEstoque)
@@ -118,6 +182,13 @@ namespace FortalezaServer.Controllers
             }
 
             var _item = await _context.Item.FindAsync(id);
+            bool hasPacote = false;
+
+            if (_item.Tipo == 2)
+            {
+                await _item.LoadItemTipo(_context);
+                hasPacote = _item.Pacote != null;
+            }
 
             var CurrentGrupos = await _context.Entry(_item).Collection(e => e.ItemHasGrupo).Query().ToListAsync();
 
@@ -153,11 +224,30 @@ namespace FortalezaServer.Controllers
                 _context.Entry(item).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
-                if (item.PacoteIditemNavigation != null)
+                if (item.Tipo == 2)
                 {
-                    _context.Entry(item.PacoteIditemNavigation).State = EntityState.Modified;
-                    await _context.SaveChangesAsync();
+                    if (item.Pacote != null)
+                    {
+                        if (hasPacote)
+                        {
+                            item.Pacote.Iditem = item.Iditem;
+                            _context.Entry(item.Pacote).State = EntityState.Modified;
+                        }
+                        else
+                        {
+                            item.Pacote.Iditem = item.Iditem;
+                            item.Pacote.IditemNavigation = null;
+                            item.Pacote.IditemProdutoNavigation = null;
+                            _context.Pacote.Add(item.Pacote);
+                        }
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
+
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -180,15 +270,25 @@ namespace FortalezaServer.Controllers
         [HttpPost]
         public async Task<ActionResult<Item>> PostItem(Item item)
         {
-            if(item.ItemHasGrupo != null)
+            if (item.ItemHasGrupo != null)
             {
                 item.ItemHasGrupo.ToList().ForEach(e => e.IdgrupoNavigation = null);
             }
 
-            item.PacoteIditemNavigation.IditemProdutoNavigation = null;
-
-
-
+            if(item.Pacote != null)
+            {
+                if(item.Tipo != 2)
+                {
+                    item.Pacote = null;
+                }
+                else
+                {
+                    if (item.Pacote.IditemProdutoNavigation != null)
+                    {
+                        item.Pacote.IditemProdutoNavigation = null;
+                    }
+                }
+            }
             _context.Item.Add(item);
 
 
@@ -209,7 +309,7 @@ namespace FortalezaServer.Controllers
 
             await item.LoadItemTipo(_context);
 
-            await item.AddEstoque(estoque,_context);
+            await item.AddEstoque(estoque, _context);
 
             return CreatedAtAction("GetItem", new { id = item.Iditem }, item);
         }
@@ -253,6 +353,13 @@ namespace FortalezaServer.Controllers
             await _context.SaveChangesAsync();
 
             return item;
+        }
+
+        // GET: api/Items/5/exists
+        [HttpGet("{id}/exists")]
+        public async Task<ActionResult<bool>> ItemExistsRoute(int id)
+        {
+            return await _context.Item.AnyAsync(e => e.Iditem == id);
         }
 
         private bool ItemExists(int id)

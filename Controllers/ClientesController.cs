@@ -22,11 +22,44 @@ namespace FortalezaServer.Controllers
 
         // GET: api/Clientes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Cliente>>> GetCliente()
+        public async Task<ActionResult<IEnumerable<Cliente>>> GetCliente(string query = "")
         {
-            return await _context.Cliente
+            if(string.IsNullOrEmpty(query))
+            {
+                return await _context.Cliente
                 .Include(e => e.IdenderecoNavigation)
                 .ToListAsync();
+            }
+            else
+            {
+                List<int> queryClientes = await _context.Cliente
+                    .Where(e => e.Nome.Contains(query))
+                    .Select(e => e.Idcliente).ToListAsync();
+
+                queryClientes.AddRange(await _context.Cliente
+                    .Where(e => e.Cpf.Contains(query))
+                    .Select(e => e.Idcliente).ToListAsync());
+
+                queryClientes.AddRange(await _context.Cliente
+                    .Where(e => e.Telefone.Contains(query))
+                    .Select(e => e.Idcliente).ToListAsync());
+                
+                if(queryClientes.Count > 0)
+                {
+                    List<int> sortedClientes = queryClientes.GroupBy(e => e).Select(e => e.Key).ToList();
+                    List<Cliente> queryResult = new List<Cliente>();
+                    foreach(int idcliente in sortedClientes)
+                    {
+                        queryResult.Add(await _context.Cliente.FindAsync(idcliente));
+                    }
+                    return queryResult;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            
         }
 
         // GET: api/Clientes/5
@@ -46,33 +79,33 @@ namespace FortalezaServer.Controllers
                 }
             }
 
-            var cliente = new Cliente();
+            IQueryable<Cliente> clienteQuery;
 
             if(cpf)
             {
-                cliente = await _context.Cliente
-                    .Where(e => e.Cpf == id)
-                    .FirstAsync();
+                clienteQuery = _context.Cliente
+                    .Where(e => e.Cpf == id);
             }
             else
             {
-                cliente = await _context.Cliente.FindAsync(_id);
+                clienteQuery = _context.Cliente
+                    .Where(e => e.Idcliente == _id);
             }
+
+            clienteQuery = clienteQuery.Include(e => e.IdenderecoNavigation);
+
+            if (movimentos)
+            {
+                clienteQuery = clienteQuery
+                    .Include(e => e.ClienteHasMovimento)
+                    .ThenInclude(e => e.IdmovimentoNavigation);
+            }
+
+            Cliente cliente = await clienteQuery.FirstOrDefaultAsync();
 
             if (cliente == null)
             {
                 return NotFound();
-            }
-
-            await _context.Entry(cliente)
-                .Reference(e => e.IdenderecoNavigation)
-                .LoadAsync();
-
-            if(movimentos)
-            {
-                await _context.Entry(cliente)
-                    .Collection(e => e.ClienteHasMovimento)
-                    .LoadAsync();
             }
 
             return cliente;
@@ -110,6 +143,38 @@ namespace FortalezaServer.Controllers
                     throw;
                 }
             }
+
+            return NoContent();
+        }
+
+        [HttpPost("{id}/movimento")]
+        public async Task<IActionResult> PostMovimento(int id, Movimento movimento)
+        {
+            Cliente cliente = await _context.Cliente.FindAsync(id);
+
+            if (cliente == null)
+            {
+                return NotFound();
+            }
+
+            //Removendo as Navigations para evitar duplicação no banco de dados
+            movimento.HoraEntrada = DateTime.Now;
+            movimento.Idusuario = movimento.IdusuarioNavigation.Idusuario;
+            movimento.IdusuarioNavigation = null;
+            movimento.Idpdv = movimento.IdpdvNavigation.Idpdv;
+            movimento.IdpdvNavigation = null;
+            if(movimento.IdformaPagamentoNavigation != null)
+            {
+                movimento.IdformaPagamento = movimento.IdformaPagamentoNavigation.IdformaPagamento;
+                movimento.IdformaPagamentoNavigation = null;
+            }
+            if(movimento.IdbandeiraNavigation != null)
+            {
+                movimento.Idbandeira = movimento.IdbandeiraNavigation.Idbandeira;
+                movimento.IdbandeiraNavigation = null;
+            }
+
+            await cliente.AddMovimento(_context, movimento);
 
             return NoContent();
         }

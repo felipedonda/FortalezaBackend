@@ -17,9 +17,9 @@ namespace FortalezaServer.Models
         {
             switch (Tipo)
             {
-                case "Pacote":
+                case 2:
                     await dbcontext.Entry(this)
-                        .Reference(e => e.PacoteIditemNavigation)
+                        .Reference(e => e.Pacote)
                         .Query()
                             .Include(s => s.IditemProdutoNavigation)
                         .LoadAsync();
@@ -31,7 +31,7 @@ namespace FortalezaServer.Models
         {
             switch (Tipo)
             {
-                case "Produto":
+                case 1:
                     if (Estoque == 1)
                     {
                         var estoqueDisponivel = await dbcontext.Entry(this)
@@ -53,20 +53,20 @@ namespace FortalezaServer.Models
                         
                     }
                     break;
-                case "Pacote":
-                    if (PacoteIditemNavigation == null)
+                case 2:
+                    if (Pacote == null)
                     {
                         await LoadItemTipo(dbcontext);
                     }
-                    if (PacoteIditemNavigation != null)
+                    if (Pacote != null)
                     {
-                        if (PacoteIditemNavigation.IditemProdutoNavigation.Estoque == 1)
+                        if (Pacote.IditemProdutoNavigation.Estoque == 1)
                         {
-                            await PacoteIditemNavigation.IditemProdutoNavigation.LoadItemEstoqueAtual(dbcontext);
+                            await Pacote.IditemProdutoNavigation.LoadItemEstoqueAtual(dbcontext);
                             EstoqueAtual = new Estoque
                             {
-                                Custo = PacoteIditemNavigation.IditemProdutoNavigation.EstoqueAtual.Custo * PacoteIditemNavigation.Quantidade,
-                                QuantidadeDisponivel = PacoteIditemNavigation.IditemProdutoNavigation.EstoqueAtual.QuantidadeDisponivel / PacoteIditemNavigation.Quantidade
+                                Custo = Pacote.IditemProdutoNavigation.EstoqueAtual.Custo * Pacote.Quantidade,
+                                QuantidadeDisponivel = Pacote.IditemProdutoNavigation.EstoqueAtual.QuantidadeDisponivel / Pacote.Quantidade
                             };
                         }
                     }
@@ -81,7 +81,7 @@ namespace FortalezaServer.Models
             {
                 switch (Tipo)
                 {
-                    case "Produto":
+                    case 1:
                         List<decimal> custos = new List<decimal>();
 
                         estoque.ItemHasEstoque.Add(new ItemHasEstoque {
@@ -96,22 +96,22 @@ namespace FortalezaServer.Models
                         dbcontext.Add(estoque);
                         await dbcontext.SaveChangesAsync();
                         return custos;
-                    case "Pacote":
-                        if (PacoteIditemNavigation == null)
+                    case 2:
+                        if (Pacote == null)
                         {
                             await LoadItemTipo(dbcontext);
                         }
                         Estoque estoqueProduto = estoque;
-                        estoqueProduto.Quantidade *= PacoteIditemNavigation.Quantidade;
+                        estoqueProduto.Quantidade *= Pacote.Quantidade;
                         if(estoqueProduto.Saida == 0)
                         {
-                            estoqueProduto.QuantidadeDisponivel *= PacoteIditemNavigation.Quantidade;
+                            estoqueProduto.QuantidadeDisponivel *= Pacote.Quantidade;
                             if(estoqueProduto.Custo != 0)
                             {
-                                estoqueProduto.Custo /= PacoteIditemNavigation.Quantidade;
+                                estoqueProduto.Custo /= Pacote.Quantidade;
                             }
                         }
-                        return await PacoteIditemNavigation.IditemProdutoNavigation.AddEstoque(estoqueProduto, dbcontext);
+                        return await Pacote.IditemProdutoNavigation.AddEstoque(estoqueProduto, dbcontext);
                 }
             }
             return null;
@@ -121,7 +121,7 @@ namespace FortalezaServer.Models
             decimal quantity,
             fortalezaitdbContext dbcontext)
         {
-            if(Tipo != "Produto")
+            if(Tipo != 1)
             {
                 throw new Exception("Método disponível somente para Produtos.");
             }

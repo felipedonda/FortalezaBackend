@@ -19,10 +19,14 @@ namespace FortalezaServer.Models
         public int? IdformaPagamento { get; set; }
         public int? Idcaixa { get; set; }
         public int? Idbandeira { get; set; }
+        public int Idusuario { get; set; }
+        public int Idpdv { get; set; }
 
         public virtual Bandeira IdbandeiraNavigation { get; set; }
         public virtual Caixa IdcaixaNavigation { get; set; }
         public virtual FormaPagamento IdformaPagamentoNavigation { get; set; }
+        public virtual Pdv IdpdvNavigation { get; set; }
+        public virtual Usuario IdusuarioNavigation { get; set; }
         public virtual ICollection<ClienteHasMovimento> ClienteHasMovimento { get; set; }
         public virtual ICollection<Pagamento> Pagamento { get; set; }
     }

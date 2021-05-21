@@ -27,7 +27,7 @@ namespace FortalezaServer.Models
             }
 
             Aberta = 0;
-            HoraFechamento = DateTime.UtcNow;
+            HoraFechamento = DateTime.Now;
 
             dbcontext.Entry(this).State = EntityState.Modified;
 

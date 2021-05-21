@@ -1,0 +1,132 @@
+2021-02-03 12:52:03.456 -03:00 [INF] Starting web host
+2021-02-03 12:52:05.390 -03:00 [INF] Now listening on: http://[::]:8000
+2021-02-03 12:52:05.396 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-02-03 12:52:05.397 -03:00 [INF] Hosting environment: Development
+2021-02-03 12:52:05.398 -03:00 [INF] Content root path: C:\Users\felip\source\repos\FortalezaServer
+2021-02-03 12:52:07.293 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/status  
+2021-02-03 12:52:07.372 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.IndexController.GetStatus (FortalezaServer)'
+2021-02-03 12:52:07.432 -03:00 [INF] Route matched with {action = "GetStatus", controller = "Index"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[FortalezaServer.Controllers.IndexController+Status]] GetStatus() on controller FortalezaServer.Controllers.IndexController (FortalezaServer).
+2021-02-03 12:52:08.663 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-02-03 12:52:09.192 -03:00 [INF] Executing ObjectResult, writing value of type 'FortalezaServer.Controllers.IndexController+Status'.
+2021-02-03 12:52:09.401 -03:00 [INF] Executed action FortalezaServer.Controllers.IndexController.GetStatus (FortalezaServer) in 1953.1935ms
+2021-02-03 12:52:09.484 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.IndexController.GetStatus (FortalezaServer)'
+2021-02-03 12:52:09.505 -03:00 [INF] Request finished in 2217.8135ms 200 application/json; charset=utf-8
+2021-02-03 12:52:10.196 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api  
+2021-02-03 12:52:10.200 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.IndexController.Get (FortalezaServer)'
+2021-02-03 12:52:10.204 -03:00 [INF] Route matched with {action = "Get", controller = "Index"}. Executing controller action with signature System.String Get() on controller FortalezaServer.Controllers.IndexController (FortalezaServer).
+2021-02-03 12:52:10.210 -03:00 [INF] Executing ObjectResult, writing value of type 'System.String'.
+2021-02-03 12:52:10.214 -03:00 [INF] Executed action FortalezaServer.Controllers.IndexController.Get (FortalezaServer) in 4.714ms
+2021-02-03 12:52:10.217 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.IndexController.Get (FortalezaServer)'
+2021-02-03 12:52:10.218 -03:00 [INF] Request finished in 22.3136ms 200 text/plain; charset=utf-8
+2021-02-03 12:52:10.255 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api  
+2021-02-03 12:52:10.257 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.IndexController.Get (FortalezaServer)'
+2021-02-03 12:52:10.259 -03:00 [INF] Route matched with {action = "Get", controller = "Index"}. Executing controller action with signature System.String Get() on controller FortalezaServer.Controllers.IndexController (FortalezaServer).
+2021-02-03 12:52:10.261 -03:00 [INF] Executing ObjectResult, writing value of type 'System.String'.
+2021-02-03 12:52:10.263 -03:00 [INF] Executed action FortalezaServer.Controllers.IndexController.Get (FortalezaServer) in 2.5026ms
+2021-02-03 12:52:10.266 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.IndexController.Get (FortalezaServer)'
+2021-02-03 12:52:10.268 -03:00 [INF] Request finished in 13.3784ms 200 text/plain; charset=utf-8
+2021-02-03 12:52:10.374 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/vendas/actions/aberta  
+2021-02-03 12:52:10.380 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.VendasController.GetVendaAberta (FortalezaServer)'
+2021-02-03 12:52:10.393 -03:00 [INF] Route matched with {action = "GetVendaAberta", controller = "Vendas"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Int32]] GetVendaAberta(Int32) on controller FortalezaServer.Controllers.VendasController (FortalezaServer).
+2021-02-03 12:52:10.422 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-02-03 12:52:10.544 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/grupos  
+2021-02-03 12:52:10.548 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.GruposController.GetGrupo (FortalezaServer)'
+2021-02-03 12:52:10.555 -03:00 [INF] Route matched with {action = "GetGrupo", controller = "Grupos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.IEnumerable`1[FortalezaServer.Models.Grupo]]] GetGrupo() on controller FortalezaServer.Controllers.GruposController (FortalezaServer).
+2021-02-03 12:52:10.605 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-02-03 12:52:10.741 -03:00 [INF] Executed DbCommand (7ms) [Parameters=[@__tipo_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `v`.`idvenda`, `v`.`aberta`, `v`.`acrescimo`, `v`.`desconto`, `v`.`descricao`, `v`.`hora_entrada`, `v`.`hora_fechamento`, `v`.`idcaixa`, `v`.`idcliente`, `v`.`idpdv`, `v`.`idresponsavel`, `v`.`numero_venda`, `v`.`paga`, `v`.`tipo`, `v`.`valor_pago`
+FROM `venda` AS `v`
+WHERE (`v`.`aberta` = 1) & (`v`.`tipo` = @__tipo_0)
+LIMIT 1
+2021-02-03 12:52:10.741 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT `g`.`idgrupo`, `g`.`descricao`, `g`.`nome`, `g`.`visivel`
+FROM `grupo` AS `g`
+2021-02-03 12:52:10.830 -03:00 [INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[FortalezaServer.Models.Grupo, FortalezaServer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2021-02-03 12:52:10.835 -03:00 [INF] Executing ObjectResult, writing value of type 'System.Int32'.
+2021-02-03 12:52:10.838 -03:00 [INF] Executed action FortalezaServer.Controllers.VendasController.GetVendaAberta (FortalezaServer) in 441.6897ms
+2021-02-03 12:52:10.842 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.VendasController.GetVendaAberta (FortalezaServer)'
+2021-02-03 12:52:10.846 -03:00 [INF] Request finished in 471.9251ms 200 application/json; charset=utf-8
+2021-02-03 12:52:10.849 -03:00 [INF] Executed action FortalezaServer.Controllers.GruposController.GetGrupo (FortalezaServer) in 286.353ms
+2021-02-03 12:52:10.860 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/vendas/1?itemvendas=true  
+2021-02-03 12:52:10.863 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.GruposController.GetGrupo (FortalezaServer)'
+2021-02-03 12:52:10.866 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.VendasController.GetVenda (FortalezaServer)'
+2021-02-03 12:52:10.869 -03:00 [INF] Request finished in 325.5373ms 200 application/json; charset=utf-8
+2021-02-03 12:52:10.882 -03:00 [INF] Route matched with {action = "GetVenda", controller = "Vendas"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[FortalezaServer.Models.Venda]] GetVenda(Int32, Boolean, Boolean, Boolean) on controller FortalezaServer.Controllers.VendasController (FortalezaServer).
+2021-02-03 12:52:10.897 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/items  
+2021-02-03 12:52:10.902 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.ItemsController.GetItem (FortalezaServer)'
+2021-02-03 12:52:10.904 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-02-03 12:52:10.910 -03:00 [INF] Route matched with {action = "GetItem", controller = "Items"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.IEnumerable`1[FortalezaServer.Models.Item]]] GetItem(Boolean, Boolean, Boolean) on controller FortalezaServer.Controllers.ItemsController (FortalezaServer).
+2021-02-03 12:52:10.932 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-02-03 12:52:10.938 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `v`.`idvenda`, `v`.`aberta`, `v`.`acrescimo`, `v`.`desconto`, `v`.`descricao`, `v`.`hora_entrada`, `v`.`hora_fechamento`, `v`.`idcaixa`, `v`.`idcliente`, `v`.`idpdv`, `v`.`idresponsavel`, `v`.`numero_venda`, `v`.`paga`, `v`.`tipo`, `v`.`valor_pago`
+FROM `venda` AS `v`
+WHERE `v`.`idvenda` = @__p_0
+LIMIT 1
+2021-02-03 12:52:10.956 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT `i`.`iditem`, `i`.`atacado`, `i`.`codigo_barras`, `i`.`descricao`, `i`.`disponivel`, `i`.`estoque`, `i`.`estoque_minimo`, `i`.`imagem`, `i`.`permite_combo`, `i`.`quantidade_atacado`, `i`.`tipo`, `i`.`unidade`, `i`.`unidade_inteira`, `i`.`valor`, `i`.`valor_atacado`, `i`.`visivel`
+FROM `item` AS `i`
+WHERE `i`.`visivel` = 1
+2021-02-03 12:52:11.042 -03:00 [INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[FortalezaServer.Models.Item, FortalezaServer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2021-02-03 12:52:11.068 -03:00 [INF] Executed action FortalezaServer.Controllers.ItemsController.GetItem (FortalezaServer) in 139.4728ms
+2021-02-03 12:52:11.071 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.ItemsController.GetItem (FortalezaServer)'
+2021-02-03 12:52:11.075 -03:00 [INF] Request finished in 177.8924ms 200 application/json; charset=utf-8
+2021-02-03 12:52:11.096 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `i`.`iditem_venda`, `i`.`cancelado`, `i`.`custo`, `i`.`iditem`, `i`.`idvenda`, `i`.`indice`, `i`.`quantidade`, `i`.`valor`, `i0`.`iditem`, `i0`.`atacado`, `i0`.`codigo_barras`, `i0`.`descricao`, `i0`.`disponivel`, `i0`.`estoque`, `i0`.`estoque_minimo`, `i0`.`imagem`, `i0`.`permite_combo`, `i0`.`quantidade_atacado`, `i0`.`tipo`, `i0`.`unidade`, `i0`.`unidade_inteira`, `i0`.`valor`, `i0`.`valor_atacado`, `i0`.`visivel`
+FROM `item_venda` AS `i`
+INNER JOIN `item` AS `i0` ON `i`.`iditem` = `i0`.`iditem`
+WHERE `i`.`idvenda` = @__p_0
+2021-02-03 12:52:11.135 -03:00 [INF] Executing ObjectResult, writing value of type 'FortalezaServer.Models.Venda'.
+2021-02-03 12:52:11.200 -03:00 [INF] Executed action FortalezaServer.Controllers.VendasController.GetVenda (FortalezaServer) in 303.5915ms
+2021-02-03 12:52:11.202 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.VendasController.GetVenda (FortalezaServer)'
+2021-02-03 12:52:11.203 -03:00 [INF] Request finished in 343.4095ms 200 application/json; charset=utf-8
+2021-02-03 12:52:46.672 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/vendas/1?pagamentos=true  
+2021-02-03 12:52:46.673 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.VendasController.GetVenda (FortalezaServer)'
+2021-02-03 12:52:46.675 -03:00 [INF] Route matched with {action = "GetVenda", controller = "Vendas"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[FortalezaServer.Models.Venda]] GetVenda(Int32, Boolean, Boolean, Boolean) on controller FortalezaServer.Controllers.VendasController (FortalezaServer).
+2021-02-03 12:52:46.681 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-02-03 12:52:46.689 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `v`.`idvenda`, `v`.`aberta`, `v`.`acrescimo`, `v`.`desconto`, `v`.`descricao`, `v`.`hora_entrada`, `v`.`hora_fechamento`, `v`.`idcaixa`, `v`.`idcliente`, `v`.`idpdv`, `v`.`idresponsavel`, `v`.`numero_venda`, `v`.`paga`, `v`.`tipo`, `v`.`valor_pago`
+FROM `venda` AS `v`
+WHERE `v`.`idvenda` = @__p_0
+LIMIT 1
+2021-02-03 12:52:46.700 -03:00 [INF] Executed DbCommand (0ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `i`.`iditem_venda`, `i`.`cancelado`, `i`.`custo`, `i`.`iditem`, `i`.`idvenda`, `i`.`indice`, `i`.`quantidade`, `i`.`valor`
+FROM `item_venda` AS `i`
+WHERE `i`.`idvenda` = @__p_0
+2021-02-03 12:52:46.721 -03:00 [INF] Executed DbCommand (1ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `p`.`idvenda`, `p`.`idmovimento`, `m`.`idmovimento`, `m`.`descricao`, `m`.`hora_entrada`, `m`.`idbandeira`, `m`.`idcaixa`, `m`.`idforma_pagamento`, `m`.`idpdv`, `m`.`idusuario`, `m`.`tipo`, `m`.`valor`, `f`.`idforma_pagamento`, `f`.`bandeira`, `f`.`debitar_cliente`, `f`.`debito`, `f`.`gerar_contas_receber`, `f`.`nome`, `f`.`ordem`
+FROM `pagamento` AS `p`
+INNER JOIN `movimento` AS `m` ON `p`.`idmovimento` = `m`.`idmovimento`
+LEFT JOIN `forma_pagamento` AS `f` ON `m`.`idforma_pagamento` = `f`.`idforma_pagamento`
+WHERE `p`.`idvenda` = @__p_0
+2021-02-03 12:52:46.726 -03:00 [INF] Executing ObjectResult, writing value of type 'FortalezaServer.Models.Venda'.
+2021-02-03 12:52:46.728 -03:00 [INF] Executed action FortalezaServer.Controllers.VendasController.GetVenda (FortalezaServer) in 49.5571ms
+2021-02-03 12:52:46.729 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.VendasController.GetVenda (FortalezaServer)'
+2021-02-03 12:52:46.732 -03:00 [INF] Request finished in 60.2224ms 200 application/json; charset=utf-8
+2021-02-03 12:52:46.802 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/caixas/actions/aberto?idnomeCaixa=1  
+2021-02-03 12:52:46.804 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.CaixasController.GetCaixaAberto (FortalezaServer)'
+2021-02-03 12:52:46.812 -03:00 [INF] Route matched with {action = "GetCaixaAberto", controller = "Caixas"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[FortalezaServer.Models.Caixa]] GetCaixaAberto(Int32, Boolean) on controller FortalezaServer.Controllers.CaixasController (FortalezaServer).
+2021-02-03 12:52:46.818 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-02-03 12:52:46.853 -03:00 [INF] Executed DbCommand (2ms) [Parameters=[@__idnomeCaixa_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `c`.`idcaixa`, `c`.`aberto`, `c`.`idnome_caixa`, `n`.`idnome_caixa`, `n`.`nome`, `a`.`idcaixa`, `a`.`hora`, `a`.`idpdv`, `a`.`idusuario`, `p`.`idpdv`, `p`.`nome`, `u`.`idusuario`, `u`.`cpf`, `u`.`idendereco`, `u`.`login`, `u`.`nome`, `u`.`senha`, `u`.`telefone1`, `u`.`telefone2`
+FROM `caixa` AS `c`
+INNER JOIN `nome_caixa` AS `n` ON `c`.`idnome_caixa` = `n`.`idnome_caixa`
+LEFT JOIN `abertura` AS `a` ON `c`.`idcaixa` = `a`.`idcaixa`
+LEFT JOIN `pdv` AS `p` ON `a`.`idpdv` = `p`.`idpdv`
+LEFT JOIN `usuario` AS `u` ON `a`.`idusuario` = `u`.`idusuario`
+WHERE (`c`.`aberto` = 1) AND (`c`.`idnome_caixa` = @__idnomeCaixa_0)
+LIMIT 1
+2021-02-03 12:52:46.879 -03:00 [INF] Executing HttpStatusCodeResult, setting HTTP status code 204
+2021-02-03 12:52:46.883 -03:00 [INF] Executed action FortalezaServer.Controllers.CaixasController.GetCaixaAberto (FortalezaServer) in 67.7338ms
+2021-02-03 12:52:46.887 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.CaixasController.GetCaixaAberto (FortalezaServer)'
+2021-02-03 12:52:46.889 -03:00 [INF] Request finished in 86.8068ms 204 
+2021-02-03 12:52:46.917 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/formapagamentos  
+2021-02-03 12:52:46.918 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.FormaPagamentosController.GetFormaPagamento (FortalezaServer)'
+2021-02-03 12:52:46.924 -03:00 [INF] Route matched with {action = "GetFormaPagamento", controller = "FormaPagamentos"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.IEnumerable`1[FortalezaServer.Models.FormaPagamento]]] GetFormaPagamento() on controller FortalezaServer.Controllers.FormaPagamentosController (FortalezaServer).
+2021-02-03 12:52:46.935 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-02-03 12:52:46.942 -03:00 [INF] Executed DbCommand (0ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT `f`.`idforma_pagamento`, `f`.`bandeira`, `f`.`debitar_cliente`, `f`.`debito`, `f`.`gerar_contas_receber`, `f`.`nome`, `f`.`ordem`
+FROM `forma_pagamento` AS `f`
+2021-02-03 12:52:46.953 -03:00 [INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[FortalezaServer.Models.FormaPagamento, FortalezaServer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2021-02-03 12:52:46.960 -03:00 [INF] Executed action FortalezaServer.Controllers.FormaPagamentosController.GetFormaPagamento (FortalezaServer) in 26.3814ms
+2021-02-03 12:52:46.962 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.FormaPagamentosController.GetFormaPagamento (FortalezaServer)'
+2021-02-03 12:52:46.964 -03:00 [INF] Request finished in 46.9262ms 200 application/json; charset=utf-8

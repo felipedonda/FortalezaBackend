@@ -1,0 +1,32 @@
+2021-01-25 21:25:33.619 -03:00 [INF] Starting web host
+2021-01-25 21:25:34.807 -03:00 [INF] Now listening on: http://[::]:8000
+2021-01-25 21:25:34.813 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-01-25 21:25:34.813 -03:00 [INF] Hosting environment: Development
+2021-01-25 21:25:34.815 -03:00 [INF] Content root path: C:\Users\felip\source\repos\FortalezaServer
+2021-01-25 21:25:36.059 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/status  
+2021-01-25 21:25:36.117 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.IndexController.GetStatus (FortalezaServer)'
+2021-01-25 21:25:36.179 -03:00 [INF] Route matched with {action = "GetStatus", controller = "Index"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[FortalezaServer.Controllers.IndexController+Status]] GetStatus() on controller FortalezaServer.Controllers.IndexController (FortalezaServer).
+2021-01-25 21:25:37.127 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-01-25 21:25:37.493 -03:00 [INF] Executing ObjectResult, writing value of type 'FortalezaServer.Controllers.IndexController+Status'.
+2021-01-25 21:25:37.617 -03:00 [INF] Executed action FortalezaServer.Controllers.IndexController.GetStatus (FortalezaServer) in 1427.7246ms
+2021-01-25 21:25:37.621 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.IndexController.GetStatus (FortalezaServer)'
+2021-01-25 21:25:37.626 -03:00 [INF] Request finished in 1568.7846ms 200 application/json; charset=utf-8
+2021-01-25 21:26:06.627 -03:00 [INF] Request starting HTTP/1.1 POST http://localhost:8000/api/vendas/5/pagamentos application/json; charset=utf-8 620
+2021-01-25 21:26:06.635 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.VendasController.PostPagamento (FortalezaServer)'
+2021-01-25 21:26:06.648 -03:00 [INF] Route matched with {action = "PostPagamento", controller = "Vendas"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[FortalezaServer.Models.Venda]] PostPagamento(Int32, FortalezaServer.Models.Pagamento) on controller FortalezaServer.Controllers.VendasController (FortalezaServer).
+2021-01-25 21:26:06.778 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-01-25 21:26:07.072 -03:00 [INF] Executed DbCommand (5ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT `t`.`idvenda`, `t`.`aberta`, `t`.`acrescimo`, `t`.`desconto`, `t`.`descricao`, `t`.`hora_entrada`, `t`.`hora_fechamento`, `t`.`idcaixa`, `t`.`idcliente`, `t`.`idpdv`, `t`.`idresponsavel`, `t`.`numero_venda`, `t`.`paga`, `t`.`tipo`, `t`.`valor_pago`, `t`.`idcliente0`, `t`.`celular`, `t`.`cpf`, `t`.`email`, `t`.`idendereco`, `t`.`nome`, `t`.`telefone`, `i`.`iditem_venda`, `i`.`cancelado`, `i`.`custo`, `i`.`iditem`, `i`.`idvenda`, `i`.`indice`, `i`.`quantidade`, `i`.`valor`, `t0`.`idcliente`, `t0`.`idmovimento`, `t0`.`idmovimento0`, `t0`.`descricao`, `t0`.`hora_entrada`, `t0`.`idbandeira`, `t0`.`idcaixa`, `t0`.`idforma_pagamento`, `t0`.`idpdv`, `t0`.`idusuario`, `t0`.`tipo`, `t0`.`valor`
+FROM (
+    SELECT `v`.`idvenda`, `v`.`aberta`, `v`.`acrescimo`, `v`.`desconto`, `v`.`descricao`, `v`.`hora_entrada`, `v`.`hora_fechamento`, `v`.`idcaixa`, `v`.`idcliente`, `v`.`idpdv`, `v`.`idresponsavel`, `v`.`numero_venda`, `v`.`paga`, `v`.`tipo`, `v`.`valor_pago`, `c`.`idcliente` AS `idcliente0`, `c`.`celular`, `c`.`cpf`, `c`.`email`, `c`.`idendereco`, `c`.`nome`, `c`.`telefone`
+    FROM `venda` AS `v`
+    LEFT JOIN `cliente` AS `c` ON `v`.`idcliente` = `c`.`idcliente`
+    LIMIT 1
+) AS `t`
+LEFT JOIN `item_venda` AS `i` ON `t`.`idvenda` = `i`.`idvenda`
+LEFT JOIN (
+    SELECT `c0`.`idcliente`, `c0`.`idmovimento`, `m`.`idmovimento` AS `idmovimento0`, `m`.`descricao`, `m`.`hora_entrada`, `m`.`idbandeira`, `m`.`idcaixa`, `m`.`idforma_pagamento`, `m`.`idpdv`, `m`.`idusuario`, `m`.`tipo`, `m`.`valor`
+    FROM `cliente_has_movimento` AS `c0`
+    INNER JOIN `movimento` AS `m` ON `c0`.`idmovimento` = `m`.`idmovimento`
+) AS `t0` ON `t`.`idcliente0` = `t0`.`idcliente`
+ORDER BY `t`.`idvenda`, `i`.`iditem_venda`, `t0`.`idcliente`, `t0`.`idmovimento`, `t0`.`idmovimento0`

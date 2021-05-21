@@ -1,0 +1,18 @@
+2021-03-25 11:38:47.712 -03:00 [INF] Starting web host
+2021-03-25 11:38:48.865 -03:00 [INF] Now listening on: http://[::]:8000
+2021-03-25 11:38:48.872 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-03-25 11:38:48.873 -03:00 [INF] Hosting environment: Development
+2021-03-25 11:38:48.874 -03:00 [INF] Content root path: C:\Users\felip\source\repos\FortalezaServer
+2021-03-25 11:38:53.086 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/fiscal/cfe-venda/2  
+2021-03-25 11:38:53.128 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.FiscalController.GetAsync (FortalezaServer)'
+2021-03-25 11:38:53.168 -03:00 [INF] Route matched with {action = "Get", controller = "Fiscal"}. Executing controller action with signature System.Threading.Tasks.Task`1[System.String] GetAsync(Int32) on controller FortalezaServer.Controllers.FiscalController (FortalezaServer).
+2021-03-25 11:38:53.956 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-03-25 11:38:54.504 -03:00 [INF] Executed DbCommand (5ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `v`.`idvenda`, `v`.`aberta`, `v`.`acrescimo`, `v`.`desconto`, `v`.`descricao`, `v`.`hora_entrada`, `v`.`hora_fechamento`, `v`.`idcaixa`, `v`.`idcliente`, `v`.`idpdv`, `v`.`idresponsavel`, `v`.`numero_venda`, `v`.`paga`, `v`.`tipo`, `v`.`valor_pago`
+FROM `venda` AS `v`
+WHERE `v`.`idvenda` = @__p_0
+LIMIT 1
+2021-03-25 11:38:54.594 -03:00 [INF] Executing ObjectResult, writing value of type 'System.String'.
+2021-03-25 11:38:54.602 -03:00 [INF] Executed action FortalezaServer.Controllers.FiscalController.GetAsync (FortalezaServer) in 1427.5032ms
+2021-03-25 11:38:54.604 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.FiscalController.GetAsync (FortalezaServer)'
+2021-03-25 11:38:54.608 -03:00 [INF] Request finished in 1525.0834ms 200 text/plain; charset=utf-8

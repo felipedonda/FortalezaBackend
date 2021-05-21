@@ -14,6 +14,13 @@ namespace FortalezaServer.Models
         public int? RegimeTributario { get; set; }
         public string Cnae { get; set; }
         public string Logo { get; set; }
+        public int? CstPis { get; set; }
+        public string InscricaoEstadual { get; set; }
+        public string InscricaoMunicipal { get; set; }
+        public byte? IndiceRateioIssqn { get; set; }
+        public int? Csosn { get; set; }
+        public string Telefone { get; set; }
+        public string Email { get; set; }
 
         public virtual Endereco IdenderecoNavigation { get; set; }
     }

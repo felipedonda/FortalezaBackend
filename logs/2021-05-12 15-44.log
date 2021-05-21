@@ -1,0 +1,14 @@
+2021-05-12 15:44:45.978 -03:00 [INF] Starting web host
+2021-05-12 15:44:47.285 -03:00 [INF] Now listening on: http://[::]:8000
+2021-05-12 15:44:47.291 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-05-12 15:44:47.292 -03:00 [INF] Hosting environment: Development
+2021-05-12 15:44:47.293 -03:00 [INF] Content root path: C:\Users\felip\source\repos\FortalezaServer
+2021-05-12 15:45:00.368 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/fiscal/cfe-test  
+2021-05-12 15:45:00.430 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.FiscalController.GetCfeTestAsync (FortalezaServer)'
+2021-05-12 15:45:00.490 -03:00 [INF] Route matched with {action = "GetCfeTest", controller = "Fiscal"}. Executing controller action with signature Microsoft.AspNetCore.Mvc.ActionResult`1[System.String] GetCfeTestAsync() on controller FortalezaServer.Controllers.FiscalController (FortalezaServer).
+2021-05-12 15:45:00.816 -03:00 [INF] Executing ObjectResult, writing value of type 'System.String'.
+2021-05-12 15:45:00.835 -03:00 [INF] Executed action FortalezaServer.Controllers.FiscalController.GetCfeTestAsync (FortalezaServer) in 338.0243ms
+2021-05-12 15:45:00.838 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.FiscalController.GetCfeTestAsync (FortalezaServer)'
+2021-05-12 15:45:00.841 -03:00 [INF] Request finished in 477.7885ms 200 text/plain; charset=utf-8
+2021-05-12 15:45:00.917 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/favicon.ico  
+2021-05-12 15:45:00.927 -03:00 [INF] Request finished in 10.3519ms 404 

@@ -15,6 +15,7 @@ namespace FortalezaServer.Models
         {
         }
 
+        public virtual DbSet<Abertura> Abertura { get; set; }
         public virtual DbSet<Adicional> Adicional { get; set; }
         public virtual DbSet<AdicionalItemVenda> AdicionalItemVenda { get; set; }
         public virtual DbSet<Bandeira> Bandeira { get; set; }
@@ -28,6 +29,7 @@ namespace FortalezaServer.Models
         public virtual DbSet<Estoque> Estoque { get; set; }
         public virtual DbSet<EstoqueHasFornecedor> EstoqueHasFornecedor { get; set; }
         public virtual DbSet<EstoqueHasVenda> EstoqueHasVenda { get; set; }
+        public virtual DbSet<Fechamento> Fechamento { get; set; }
         public virtual DbSet<Fiscal> Fiscal { get; set; }
         public virtual DbSet<FormaPagamento> FormaPagamento { get; set; }
         public virtual DbSet<Fornecedor> Fornecedor { get; set; }
@@ -40,12 +42,16 @@ namespace FortalezaServer.Models
         public virtual DbSet<ItemVenda> ItemVenda { get; set; }
         public virtual DbSet<Metodo> Metodo { get; set; }
         public virtual DbSet<Movimento> Movimento { get; set; }
+        public virtual DbSet<NomeCaixa> NomeCaixa { get; set; }
         public virtual DbSet<Pacote> Pacote { get; set; }
         public virtual DbSet<Pagamento> Pagamento { get; set; }
+        public virtual DbSet<Pdv> Pdv { get; set; }
         public virtual DbSet<Pedido> Pedido { get; set; }
         public virtual DbSet<Preferencias> Preferencias { get; set; }
         public virtual DbSet<TaxasEntrega> TaxasEntrega { get; set; }
         public virtual DbSet<TipoEntregador> TipoEntregador { get; set; }
+        public virtual DbSet<Troca> Troca { get; set; }
+        public virtual DbSet<TrocaHasItemVenda> TrocaHasItemVenda { get; set; }
         public virtual DbSet<Usuario> Usuario { get; set; }
         public virtual DbSet<Venda> Venda { get; set; }
         public virtual DbSet<VendaHasComanda> VendaHasComanda { get; set; }
@@ -61,6 +67,51 @@ namespace FortalezaServer.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Abertura>(entity =>
+            {
+                entity.HasKey(e => e.Idcaixa)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("abertura");
+
+                entity.HasIndex(e => e.Idcaixa)
+                    .HasName("fk_abertura_caixa1_idx");
+
+                entity.HasIndex(e => e.Idpdv)
+                    .HasName("fk_abertura_pdv1_idx");
+
+                entity.HasIndex(e => e.Idusuario)
+                    .HasName("fk_abertura_usuario1_idx");
+
+                entity.Property(e => e.Idcaixa).HasColumnName("idcaixa");
+
+                entity.Property(e => e.Hora).HasColumnName("hora");
+
+                entity.Property(e => e.Idpdv).HasColumnName("idpdv");
+
+                entity.Property(e => e.Idusuario)
+                    .HasColumnName("idusuario")
+                    .ValueGeneratedOnAdd();
+
+                entity.HasOne(d => d.IdcaixaNavigation)
+                    .WithOne(p => p.Abertura)
+                    .HasForeignKey<Abertura>(d => d.Idcaixa)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_abertura_caixa1");
+
+                entity.HasOne(d => d.IdpdvNavigation)
+                    .WithMany(p => p.Abertura)
+                    .HasForeignKey(d => d.Idpdv)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_abertura_pdv1");
+
+                entity.HasOne(d => d.IdusuarioNavigation)
+                    .WithMany(p => p.Abertura)
+                    .HasForeignKey(d => d.Idusuario)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_abertura_usuario1");
+            });
+
             modelBuilder.Entity<Adicional>(entity =>
             {
                 entity.HasKey(e => e.Idadicional)
@@ -152,16 +203,16 @@ namespace FortalezaServer.Models
 
                 entity.Property(e => e.Ordem).HasColumnName("ordem");
 
-                entity.Property(e => e.PrazoCredito).HasColumnName("prazo_credito");
+                entity.Property(e => e.Prazo1).HasColumnName("prazo1");
 
-                entity.Property(e => e.PrazoDebito).HasColumnName("prazo_debito");
+                entity.Property(e => e.Prazo2).HasColumnName("prazo2");
 
-                entity.Property(e => e.TaxaCredito)
-                    .HasColumnName("taxa_credito")
+                entity.Property(e => e.Taxa1)
+                    .HasColumnName("taxa1")
                     .HasColumnType("decimal(5,2)");
 
-                entity.Property(e => e.TaxaDebito)
-                    .HasColumnName("taxa_debito")
+                entity.Property(e => e.Taxa2)
+                    .HasColumnName("taxa2")
                     .HasColumnType("decimal(5,2)");
             });
 
@@ -172,38 +223,20 @@ namespace FortalezaServer.Models
 
                 entity.ToTable("caixa");
 
-                entity.HasIndex(e => e.Idresponsavel)
-                    .HasName("fk_caixa_usuario1_idx");
+                entity.HasIndex(e => e.IdnomeCaixa)
+                    .HasName("fk_caixa_nome_caixa1_idx");
 
                 entity.Property(e => e.Idcaixa).HasColumnName("idcaixa");
 
                 entity.Property(e => e.Aberto).HasColumnName("aberto");
 
-                entity.Property(e => e.HoraAbertura).HasColumnName("hora_abertura");
+                entity.Property(e => e.IdnomeCaixa).HasColumnName("idnome_caixa");
 
-                entity.Property(e => e.HoraFechamento).HasColumnName("hora_fechamento");
-
-                entity.Property(e => e.Idresponsavel).HasColumnName("idresponsavel");
-
-                entity.Property(e => e.Nome)
-                    .IsRequired()
-                    .HasColumnName("nome")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.SaldoAbertura)
-                    .HasColumnName("saldo_abertura")
-                    .HasColumnType("decimal(11,2)");
-
-                entity.Property(e => e.SaldoFechamento)
-                    .HasColumnName("saldo_fechamento")
-                    .HasColumnType("decimal(11,2)");
-
-                entity.HasOne(d => d.IdresponsavelNavigation)
+                entity.HasOne(d => d.IdnomeCaixaNavigation)
                     .WithMany(p => p.Caixa)
-                    .HasForeignKey(d => d.Idresponsavel)
+                    .HasForeignKey(d => d.IdnomeCaixa)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("fk_caixa_usuario1");
+                    .HasConstraintName("fk_caixa_nome_caixa1");
             });
 
             modelBuilder.Entity<Cliente>(entity =>
@@ -241,6 +274,11 @@ namespace FortalezaServer.Models
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Rg)
+                    .HasColumnName("rg")
+                    .HasMaxLength(9)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Telefone)
                     .HasColumnName("telefone")
                     .HasMaxLength(20)
@@ -255,29 +293,29 @@ namespace FortalezaServer.Models
 
             modelBuilder.Entity<ClienteHasMovimento>(entity =>
             {
-                entity.HasKey(e => new { e.ClienteIdcliente, e.MovimentoIdmovimento })
+                entity.HasKey(e => new { e.Idcliente, e.Idmovimento })
                     .HasName("PRIMARY");
 
                 entity.ToTable("cliente_has_movimento");
 
-                entity.HasIndex(e => e.ClienteIdcliente)
+                entity.HasIndex(e => e.Idcliente)
                     .HasName("fk_cliente_has_movimento_cliente1_idx");
 
-                entity.HasIndex(e => e.MovimentoIdmovimento)
+                entity.HasIndex(e => e.Idmovimento)
                     .HasName("fk_cliente_has_movimento_movimento1_idx");
 
-                entity.Property(e => e.ClienteIdcliente).HasColumnName("cliente_idcliente");
+                entity.Property(e => e.Idcliente).HasColumnName("idcliente");
 
-                entity.Property(e => e.MovimentoIdmovimento).HasColumnName("movimento_idmovimento");
+                entity.Property(e => e.Idmovimento).HasColumnName("idmovimento");
 
-                entity.HasOne(d => d.ClienteIdclienteNavigation)
+                entity.HasOne(d => d.IdclienteNavigation)
                     .WithMany(p => p.ClienteHasMovimento)
-                    .HasForeignKey(d => d.ClienteIdcliente)
+                    .HasForeignKey(d => d.Idcliente)
                     .HasConstraintName("fk_cliente_has_movimento_cliente1");
 
-                entity.HasOne(d => d.MovimentoIdmovimentoNavigation)
+                entity.HasOne(d => d.IdmovimentoNavigation)
                     .WithMany(p => p.ClienteHasMovimento)
-                    .HasForeignKey(d => d.MovimentoIdmovimento)
+                    .HasForeignKey(d => d.Idmovimento)
                     .HasConstraintName("fk_cliente_has_movimento_movimento1");
             });
 
@@ -476,6 +514,49 @@ namespace FortalezaServer.Models
                     .HasConstraintName("fk_estoque_has_venda_venda1");
             });
 
+            modelBuilder.Entity<Fechamento>(entity =>
+            {
+                entity.HasKey(e => e.Idcaixa)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("fechamento");
+
+                entity.HasIndex(e => e.Idcaixa)
+                    .HasName("fk_fechamento_caixa1_idx");
+
+                entity.HasIndex(e => e.Idpdv)
+                    .HasName("fk_fechamento_pdv1_idx");
+
+                entity.HasIndex(e => e.Idusuario)
+                    .HasName("fk_fechamento_usuario1_idx");
+
+                entity.Property(e => e.Idcaixa).HasColumnName("idcaixa");
+
+                entity.Property(e => e.Hora).HasColumnName("hora");
+
+                entity.Property(e => e.Idpdv).HasColumnName("idpdv");
+
+                entity.Property(e => e.Idusuario).HasColumnName("idusuario");
+
+                entity.HasOne(d => d.IdcaixaNavigation)
+                    .WithOne(p => p.Fechamento)
+                    .HasForeignKey<Fechamento>(d => d.Idcaixa)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_fechamento_caixa1");
+
+                entity.HasOne(d => d.IdpdvNavigation)
+                    .WithMany(p => p.Fechamento)
+                    .HasForeignKey(d => d.Idpdv)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_fechamento_pdv1");
+
+                entity.HasOne(d => d.IdusuarioNavigation)
+                    .WithMany(p => p.Fechamento)
+                    .HasForeignKey(d => d.Idusuario)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_fechamento_usuario1");
+            });
+
             modelBuilder.Entity<Fiscal>(entity =>
             {
                 entity.HasKey(e => e.Iditem)
@@ -485,45 +566,19 @@ namespace FortalezaServer.Models
 
                 entity.Property(e => e.Iditem).HasColumnName("iditem");
 
-                entity.Property(e => e.Cest)
-                    .HasColumnName("CEST")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.AliquotaIcms)
+                    .HasColumnName("aliquota_icms")
+                    .HasColumnType("decimal(8,4)");
 
-                entity.Property(e => e.Cfop)
-                    .HasColumnName("CFOP")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.Cest).HasColumnName("cest");
 
-                entity.Property(e => e.Csosn)
-                    .HasColumnName("CSOSN")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.Cfop).HasColumnName("cfop");
 
-                entity.Property(e => e.ImpostoEstadual)
-                    .HasColumnName("imposto_estadual")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.CstIcms).HasColumnName("cst_icms");
 
-                entity.Property(e => e.ImpostoFederal)
-                    .HasColumnName("imposto_federal")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.Ncm).HasColumnName("ncm");
 
-                entity.Property(e => e.ImpostoMunicipal)
-                    .HasColumnName("imposto_municipal")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Ncm)
-                    .HasColumnName("NCM")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Origem)
-                    .HasColumnName("origem")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
+                entity.Property(e => e.Origem).HasColumnName("origem");
 
                 entity.HasOne(d => d.IditemNavigation)
                     .WithOne(p => p.Fiscal)
@@ -613,7 +668,30 @@ namespace FortalezaServer.Models
                     .HasMaxLength(14)
                     .IsUnicode(false);
 
+                entity.Property(e => e.Csosn).HasColumnName("csosn");
+
+                entity.Property(e => e.CstPis)
+                    .HasColumnName("cst_pis")
+                    .HasComment("Mesmo CST para Cofins");
+
+                entity.Property(e => e.Email)
+                    .HasColumnName("email")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Idendereco).HasColumnName("idendereco");
+
+                entity.Property(e => e.IndiceRateioIssqn).HasColumnName("indice_rateio_issqn");
+
+                entity.Property(e => e.InscricaoEstadual)
+                    .HasColumnName("inscricao_estadual")
+                    .HasMaxLength(12)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.InscricaoMunicipal)
+                    .HasColumnName("inscricao_municipal")
+                    .HasMaxLength(15)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Logo)
                     .HasColumnName("logo")
@@ -632,12 +710,18 @@ namespace FortalezaServer.Models
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
-                entity.Property(e => e.RegimeTributario).HasColumnName("regime_tributario");
+                entity.Property(e => e.RegimeTributario)
+                    .HasColumnName("regime_tributario")
+                    .HasComment("1 - Simples Nacional, 2 - Lucro Presumido, 3 - Lucro Real");
 
                 entity.Property(e => e.Rg)
-                    .IsRequired()
                     .HasColumnName("rg")
                     .HasMaxLength(9)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Telefone)
+                    .HasColumnName("telefone")
+                    .HasMaxLength(18)
                     .IsUnicode(false);
 
                 entity.HasOne(d => d.IdenderecoNavigation)
@@ -657,7 +741,10 @@ namespace FortalezaServer.Models
 
                 entity.Property(e => e.Atacado).HasColumnName("atacado");
 
-                entity.Property(e => e.CodigoBarras).HasColumnName("codigo_barras");
+                entity.Property(e => e.CodigoBarras)
+                    .HasColumnName("codigo_barras")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Descricao)
                     .IsRequired()
@@ -812,10 +899,20 @@ namespace FortalezaServer.Models
 
                 entity.Property(e => e.IditemVenda).HasColumnName("iditem_venda");
 
-                entity.Property(e => e.Cancelado).HasColumnName("cancelado");
+                entity.Property(e => e.Acrescimo)
+                    .HasColumnName("acrescimo")
+                    .HasColumnType("decimal(11,2)");
+
+                entity.Property(e => e.Cancelado)
+                    .HasColumnName("cancelado")
+                    .HasColumnType("decimal(11,2)");
 
                 entity.Property(e => e.Custo)
                     .HasColumnName("custo")
+                    .HasColumnType("decimal(11,2)");
+
+                entity.Property(e => e.Desconto)
+                    .HasColumnName("desconto")
                     .HasColumnType("decimal(11,2)");
 
                 entity.Property(e => e.Iditem).HasColumnName("iditem");
@@ -878,6 +975,12 @@ namespace FortalezaServer.Models
                 entity.HasIndex(e => e.IdformaPagamento)
                     .HasName("fk_movimento_forma_pagamento1_idx");
 
+                entity.HasIndex(e => e.Idpdv)
+                    .HasName("fk_movimento_pdv1_idx");
+
+                entity.HasIndex(e => e.Idusuario)
+                    .HasName("fk_movimento_usuario1_idx");
+
                 entity.Property(e => e.Idmovimento).HasColumnName("idmovimento");
 
                 entity.Property(e => e.Descricao)
@@ -893,6 +996,10 @@ namespace FortalezaServer.Models
                 entity.Property(e => e.Idcaixa).HasColumnName("idcaixa");
 
                 entity.Property(e => e.IdformaPagamento).HasColumnName("idforma_pagamento");
+
+                entity.Property(e => e.Idpdv).HasColumnName("idpdv");
+
+                entity.Property(e => e.Idusuario).HasColumnName("idusuario");
 
                 entity.Property(e => e.Tipo).HasColumnName("tipo");
 
@@ -914,6 +1021,34 @@ namespace FortalezaServer.Models
                     .WithMany(p => p.Movimento)
                     .HasForeignKey(d => d.IdformaPagamento)
                     .HasConstraintName("fk_movimento_forma_pagamento1");
+
+                entity.HasOne(d => d.IdpdvNavigation)
+                    .WithMany(p => p.Movimento)
+                    .HasForeignKey(d => d.Idpdv)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_movimento_pdv1");
+
+                entity.HasOne(d => d.IdusuarioNavigation)
+                    .WithMany(p => p.Movimento)
+                    .HasForeignKey(d => d.Idusuario)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_movimento_usuario1");
+            });
+
+            modelBuilder.Entity<NomeCaixa>(entity =>
+            {
+                entity.HasKey(e => e.IdnomeCaixa)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("nome_caixa");
+
+                entity.HasIndex(e => e.Nome)
+                    .HasName("nome_UNIQUE")
+                    .IsUnique();
+
+                entity.Property(e => e.IdnomeCaixa).HasColumnName("idnome_caixa");
+
+                entity.Property(e => e.Nome).HasColumnName("nome");
             });
 
             modelBuilder.Entity<Pacote>(entity =>
@@ -937,7 +1072,7 @@ namespace FortalezaServer.Models
                     .HasColumnType("decimal(11,3)");
 
                 entity.HasOne(d => d.IditemNavigation)
-                    .WithOne(p => p.PacoteIditemNavigation)
+                    .WithOne(p => p.Pacote)
                     .HasForeignKey<Pacote>(d => d.Iditem)
                     .HasConstraintName("fk_pacote_item1");
 
@@ -965,6 +1100,8 @@ namespace FortalezaServer.Models
 
                 entity.Property(e => e.Idmovimento).HasColumnName("idmovimento");
 
+                entity.Property(e => e.Credenciadora).HasColumnName("credenciadora");
+
                 entity.HasOne(d => d.IdmovimentoNavigation)
                     .WithMany(p => p.Pagamento)
                     .HasForeignKey(d => d.Idmovimento)
@@ -974,6 +1111,26 @@ namespace FortalezaServer.Models
                     .WithMany(p => p.Pagamento)
                     .HasForeignKey(d => d.Idvenda)
                     .HasConstraintName("fk_venda_has_movimento_venda1");
+            });
+
+            modelBuilder.Entity<Pdv>(entity =>
+            {
+                entity.HasKey(e => e.Idpdv)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("pdv");
+
+                entity.HasIndex(e => e.Nome)
+                    .HasName("nome_UNIQUE")
+                    .IsUnique();
+
+                entity.Property(e => e.Idpdv).HasColumnName("idpdv");
+
+                entity.Property(e => e.Nome)
+                    .IsRequired()
+                    .HasColumnName("nome")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Pedido>(entity =>
@@ -1057,6 +1214,8 @@ namespace FortalezaServer.Models
 
                 entity.Property(e => e.CodigoTaxaEntrega).HasColumnName("codigo_taxa_entrega");
 
+                entity.Property(e => e.ModoEstoque).HasColumnName("modo_estoque");
+
                 entity.Property(e => e.ModoTaxaEntrega).HasColumnName("modo_taxa_entrega");
 
                 entity.Property(e => e.NomeTaxaEntrega)
@@ -1110,6 +1269,82 @@ namespace FortalezaServer.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.TempoMedio).HasColumnName("tempo_medio");
+            });
+
+            modelBuilder.Entity<Troca>(entity =>
+            {
+                entity.HasKey(e => e.Idvenda)
+                    .HasName("PRIMARY");
+
+                entity.ToTable("troca");
+
+                entity.HasIndex(e => e.Idpdv)
+                    .HasName("fk_troca_pdv1_idx");
+
+                entity.HasIndex(e => e.Idusuario)
+                    .HasName("fk_troca_usuario1_idx");
+
+                entity.Property(e => e.Idvenda).HasColumnName("idvenda");
+
+                entity.Property(e => e.Hora).HasColumnName("hora");
+
+                entity.Property(e => e.Idpdv).HasColumnName("idpdv");
+
+                entity.Property(e => e.Idusuario).HasColumnName("idusuario");
+
+                entity.HasOne(d => d.IdpdvNavigation)
+                    .WithMany(p => p.Troca)
+                    .HasForeignKey(d => d.Idpdv)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_troca_pdv1");
+
+                entity.HasOne(d => d.IdusuarioNavigation)
+                    .WithMany(p => p.Troca)
+                    .HasForeignKey(d => d.Idusuario)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_troca_usuario1");
+
+                entity.HasOne(d => d.IdvendaNavigation)
+                    .WithOne(p => p.Troca)
+                    .HasForeignKey<Troca>(d => d.Idvenda)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_troca_venda2");
+            });
+
+            modelBuilder.Entity<TrocaHasItemVenda>(entity =>
+            {
+                entity.HasKey(e => new { e.IditemVenda, e.Idvenda })
+                    .HasName("PRIMARY");
+
+                entity.ToTable("troca_has_item_venda");
+
+                entity.HasIndex(e => e.IditemVenda)
+                    .HasName("fk_troca_has_item_venda_item_venda1_idx");
+
+                entity.HasIndex(e => e.Idvenda)
+                    .HasName("fk_troca_has_item_venda_troca1_idx");
+
+                entity.Property(e => e.IditemVenda).HasColumnName("iditem_venda");
+
+                entity.Property(e => e.Idvenda).HasColumnName("idvenda");
+
+                entity.Property(e => e.Indice).HasColumnName("indice");
+
+                entity.Property(e => e.Quantidade)
+                    .HasColumnName("quantidade")
+                    .HasColumnType("decimal(12,3)");
+
+                entity.HasOne(d => d.IditemVendaNavigation)
+                    .WithMany(p => p.TrocaHasItemVenda)
+                    .HasForeignKey(d => d.IditemVenda)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_troca_has_item_venda_item_venda1");
+
+                entity.HasOne(d => d.IdvendaNavigation)
+                    .WithMany(p => p.TrocaHasItemVenda)
+                    .HasForeignKey(d => d.Idvenda)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_troca_has_item_venda_troca1");
             });
 
             modelBuilder.Entity<Usuario>(entity =>
@@ -1170,8 +1405,14 @@ namespace FortalezaServer.Models
 
                 entity.ToTable("venda");
 
+                entity.HasIndex(e => e.Idcaixa)
+                    .HasName("fk_venda_caixa1_idx");
+
                 entity.HasIndex(e => e.Idcliente)
                     .HasName("fk_venda_cliente1_idx");
+
+                entity.HasIndex(e => e.Idpdv)
+                    .HasName("fk_venda_pdv1_idx");
 
                 entity.HasIndex(e => e.Idresponsavel)
                     .HasName("fk_venda_usuario1_idx");
@@ -1197,7 +1438,11 @@ namespace FortalezaServer.Models
 
                 entity.Property(e => e.HoraFechamento).HasColumnName("hora_fechamento");
 
+                entity.Property(e => e.Idcaixa).HasColumnName("idcaixa");
+
                 entity.Property(e => e.Idcliente).HasColumnName("idcliente");
+
+                entity.Property(e => e.Idpdv).HasColumnName("idpdv");
 
                 entity.Property(e => e.Idresponsavel).HasColumnName("idresponsavel");
 
@@ -1211,11 +1456,23 @@ namespace FortalezaServer.Models
                     .HasColumnName("valor_pago")
                     .HasColumnType("decimal(11,2)");
 
+                entity.HasOne(d => d.IdcaixaNavigation)
+                    .WithMany(p => p.Venda)
+                    .HasForeignKey(d => d.Idcaixa)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_venda_caixa1");
+
                 entity.HasOne(d => d.IdclienteNavigation)
                     .WithMany(p => p.Venda)
                     .HasForeignKey(d => d.Idcliente)
                     .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("fk_venda_cliente1");
+
+                entity.HasOne(d => d.IdpdvNavigation)
+                    .WithMany(p => p.Venda)
+                    .HasForeignKey(d => d.Idpdv)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("fk_venda_pdv1");
 
                 entity.HasOne(d => d.IdresponsavelNavigation)
                     .WithMany(p => p.Venda)

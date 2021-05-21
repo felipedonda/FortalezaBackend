@@ -5,10 +5,10 @@ namespace FortalezaServer.Models
 {
     public partial class ClienteHasMovimento
     {
-        public int ClienteIdcliente { get; set; }
-        public int MovimentoIdmovimento { get; set; }
+        public int Idcliente { get; set; }
+        public int Idmovimento { get; set; }
 
-        public virtual Cliente ClienteIdclienteNavigation { get; set; }
-        public virtual Movimento MovimentoIdmovimentoNavigation { get; set; }
+        public virtual Cliente IdclienteNavigation { get; set; }
+        public virtual Movimento IdmovimentoNavigation { get; set; }
     }
 }

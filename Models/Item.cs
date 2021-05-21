@@ -16,8 +16,8 @@ namespace FortalezaServer.Models
 
         public int Iditem { get; set; }
         public string Descricao { get; set; }
-        public int? CodigoBarras { get; set; }
         public decimal? Valor { get; set; }
+        public string CodigoBarras { get; set; }
         public string Imagem { get; set; }
         public string Unidade { get; set; }
         public byte Visivel { get; set; }
@@ -32,7 +32,7 @@ namespace FortalezaServer.Models
         public decimal? QuantidadeAtacado { get; set; }
 
         public virtual Fiscal Fiscal { get; set; }
-        public virtual Pacote PacoteIditemNavigation { get; set; }
+        public virtual Pacote Pacote { get; set; }
         public virtual ICollection<ItemHasAdicional> ItemHasAdicional { get; set; }
         public virtual ICollection<ItemHasEstoque> ItemHasEstoque { get; set; }
         public virtual ICollection<ItemHasGrupo> ItemHasGrupo { get; set; }

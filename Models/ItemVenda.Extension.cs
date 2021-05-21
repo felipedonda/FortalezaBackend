@@ -14,22 +14,22 @@ namespace FortalezaServer.Models
 
         public async Task CalcularValor()
         {
-            bool valorVarejo = false;
+            bool valorAtacado = false;
 
-            if (IditemNavigation.Varejo == 1)
+            if (IditemNavigation.Atacado == 1)
             {
-                if (IditemNavigation.QuantidadeVarejo != null)
+                if (IditemNavigation.QuantidadeAtacado != null)
                 {
-                    if (IditemNavigation.QuantidadeVarejo <= Quantidade)
+                    if (IditemNavigation.QuantidadeAtacado <= Quantidade)
                     {
-                        valorVarejo = true;
+                        valorAtacado = true;
                     }
                 }
             }
 
-            if(valorVarejo)
+            if(valorAtacado)
             {
-                Valor = IditemNavigation.ValorVarejo;
+                Valor = IditemNavigation.ValorAtacado;
             }
             else
             {
@@ -49,11 +49,11 @@ namespace FortalezaServer.Models
 
                 switch (IditemNavigation.Tipo)
                 {
-                    case "Produto":
+                    case 1:
 
                         estoque = new Estoque
                         {
-                            HoraEntrada = DateTime.UtcNow,
+                            HoraEntrada = DateTime.Now,
                             Custo = 0,
                             Disponivel = 0,
                             OrigemVenda = 1,
@@ -74,11 +74,11 @@ namespace FortalezaServer.Models
                         }
                         break;
 
-                    case "Pacote":
+                    case 2:
 
                         estoque = new Estoque
                         {
-                            HoraEntrada = DateTime.UtcNow,
+                            HoraEntrada = DateTime.Now,
                             Custo = 0,
                             Disponivel = 0,
                             OrigemVenda = 1,
@@ -106,7 +106,7 @@ namespace FortalezaServer.Models
                             for (int i = 0; i < Quantidade; i++)
                             {
                                 decimal custoPacote = 0;
-                                for (int j = 0; j < IditemNavigation.PacoteIditemNavigation.Quantidade; j++)
+                                for (int j = 0; j < IditemNavigation.Pacote.Quantidade; j++)
                                 {
                                     custoPacote += Custos[ic];
                                     ic++;

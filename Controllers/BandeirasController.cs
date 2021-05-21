@@ -24,7 +24,7 @@ namespace FortalezaServer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Bandeira>>> GetBandeira()
         {
-            return await _context.Bandeira.ToListAsync();
+            return await _context.Bandeira.OrderBy(e => e.Ordem).ToListAsync();
         }
 
         // GET: api/Bandeiras/5
@@ -41,6 +41,15 @@ namespace FortalezaServer.Controllers
             return bandeira;
         }
 
+
+        // GET: api/Bandeiras/actions/ordem
+        [HttpGet("actions/ordem")]
+        public async Task<ActionResult<int>> GetOrdem()
+        {
+            Bandeira lastObject = await _context.Bandeira.OrderByDescending(e => e.Ordem).FirstOrDefaultAsync();
+            return lastObject.Ordem + 1;
+        }
+
         // PUT: api/Bandeiras/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -50,6 +59,16 @@ namespace FortalezaServer.Controllers
             if (id != bandeira.Idbandeira)
             {
                 return BadRequest();
+            }
+
+            Bandeira bandeiraMesmaOrdem = _context.Bandeira.Where(e => e.Ordem == bandeira.Ordem && e.Idbandeira != bandeira.Idbandeira).FirstOrDefault();
+
+            if (bandeiraMesmaOrdem != null)
+            {
+                Bandeira bandeiraAntiga = await _context.Bandeira.FindAsync(id);
+                bandeiraMesmaOrdem.Ordem = bandeiraAntiga.Ordem;
+                _context.Entry(bandeiraAntiga).State = EntityState.Detached;
+                _context.Entry(bandeiraMesmaOrdem).State = EntityState.Modified;
             }
 
             _context.Entry(bandeira).State = EntityState.Modified;
@@ -79,6 +98,14 @@ namespace FortalezaServer.Controllers
         [HttpPost]
         public async Task<ActionResult<Bandeira>> PostBandeira(Bandeira bandeira)
         {
+            Bandeira bandeiraMesmaOrdem = _context.Bandeira.Where(e => e.Ordem == bandeira.Ordem).FirstOrDefault();
+
+            if (bandeiraMesmaOrdem != null)
+            {
+                bandeiraMesmaOrdem.Ordem = (await GetOrdem()).Value;
+                _context.Entry(bandeiraMesmaOrdem).State = EntityState.Modified;
+            }
+
             _context.Bandeira.Add(bandeira);
             await _context.SaveChangesAsync();
 

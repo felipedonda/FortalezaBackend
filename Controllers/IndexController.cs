@@ -23,12 +23,14 @@ namespace FortalezaServer.Controllers
         {
             public string Version { get; set; }
             public string ServerMode { get; set; }
+            public string RequiredClient { get; set; }
             public string DbName { get; set; }
             public bool DbConnected { get; set; }
             public string ErrorMessage { get; set; }
         }
 
-        private readonly string Version = "0.4.0";
+        private readonly string Version = "0.6.2";
+        private readonly string RequiredClient = "0.6.2";
         private readonly string ServerMode = "development";
         private readonly string DbName = "fortalezaitdb";
 
@@ -60,6 +62,7 @@ namespace FortalezaServer.Controllers
             {
                 Version = Version,
                 DbName = DbName,
+                RequiredClient = RequiredClient,
                 DbConnected = dbConnected,
                 ServerMode = ServerMode,
                 ErrorMessage = errorMessage

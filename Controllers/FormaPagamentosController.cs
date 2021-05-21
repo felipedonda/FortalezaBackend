@@ -24,7 +24,7 @@ namespace FortalezaServer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<FormaPagamento>>> GetFormaPagamento()
         {
-            return await _context.FormaPagamento.ToListAsync();
+            return await _context.FormaPagamento.OrderBy(e => e.Ordem).ToListAsync();
         }
 
         // GET: api/FormaPagamentos/5
@@ -41,6 +41,14 @@ namespace FortalezaServer.Controllers
             return formaPagamento;
         }
 
+        // GET: api/FormaPagamentos/actions/ordem
+        [HttpGet("actions/ordem")]
+        public async Task<ActionResult<int>> GetOrdem()
+        {
+            FormaPagamento lastObject = await _context.FormaPagamento.OrderByDescending(e => e.Ordem).FirstOrDefaultAsync();
+            return lastObject.Ordem + 1;
+        }
+
         // PUT: api/FormaPagamentos/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
@@ -50,6 +58,16 @@ namespace FortalezaServer.Controllers
             if (id != formaPagamento.IdformaPagamento)
             {
                 return BadRequest();
+            }
+
+            FormaPagamento fpMesmaOrdem = _context.FormaPagamento.Where(e => e.Ordem == formaPagamento.Ordem && e.IdformaPagamento != formaPagamento.IdformaPagamento).FirstOrDefault();
+
+            if(fpMesmaOrdem != null)
+            {
+                FormaPagamento fpAntiga = await _context.FormaPagamento.FindAsync(id);
+                fpMesmaOrdem.Ordem = fpAntiga.Ordem;
+                _context.Entry(fpAntiga).State = EntityState.Detached;
+                _context.Entry(fpMesmaOrdem).State = EntityState.Modified;
             }
 
             _context.Entry(formaPagamento).State = EntityState.Modified;
@@ -79,6 +97,14 @@ namespace FortalezaServer.Controllers
         [HttpPost]
         public async Task<ActionResult<FormaPagamento>> PostFormaPagamento(FormaPagamento formaPagamento)
         {
+            FormaPagamento fpMesmaOrdem = _context.FormaPagamento.Where(e => e.Ordem == formaPagamento.Ordem).FirstOrDefault();
+
+            if (fpMesmaOrdem != null)
+            {
+                fpMesmaOrdem.Ordem = (await GetOrdem()).Value;
+                _context.Entry(fpMesmaOrdem).State = EntityState.Modified;
+            }
+
             _context.FormaPagamento.Add(formaPagamento);
             await _context.SaveChangesAsync();
 

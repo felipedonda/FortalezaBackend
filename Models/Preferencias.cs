@@ -10,5 +10,6 @@ namespace FortalezaServer.Models
         public int ModoTaxaEntrega { get; set; }
         public decimal TaxaEntregaPadrao { get; set; }
         public int CodigoTaxaEntrega { get; set; }
+        public byte ModoEstoque { get; set; }
     }
 }

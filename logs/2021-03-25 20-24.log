@@ -1,0 +1,18 @@
+2021-03-25 20:24:11.054 -03:00 [INF] Starting web host
+2021-03-25 20:24:12.207 -03:00 [INF] Now listening on: http://[::]:8000
+2021-03-25 20:24:12.214 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-03-25 20:24:12.216 -03:00 [INF] Hosting environment: Development
+2021-03-25 20:24:12.217 -03:00 [INF] Content root path: C:\Users\felip\source\repos\FortalezaServer
+2021-03-25 20:24:19.626 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/informacaoEmpresa  
+2021-03-25 20:24:19.675 -03:00 [INF] Request finished in 48.4911ms 404 
+2021-03-25 20:24:29.020 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/informacoesEmpresa  
+2021-03-25 20:24:29.028 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.InformacoesEmpresaController.GetInformacoesEmpresa (FortalezaServer)'
+2021-03-25 20:24:29.068 -03:00 [INF] Route matched with {action = "GetInformacoesEmpresa", controller = "InformacoesEmpresa"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.IEnumerable`1[FortalezaServer.Models.InformacoesEmpresa]]] GetInformacoesEmpresa() on controller FortalezaServer.Controllers.InformacoesEmpresaController (FortalezaServer).
+2021-03-25 20:24:29.807 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-03-25 20:24:30.273 -03:00 [INF] Executed DbCommand (4ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT `i`.`idinformacoes_empresa`, `i`.`cnae`, `i`.`cpf`, `i`.`idendereco`, `i`.`logo`, `i`.`nome_fantasia`, `i`.`razao_social`, `i`.`regime_tributario`, `i`.`rg`
+FROM `informacoes_empresa` AS `i`
+2021-03-25 20:24:30.328 -03:00 [INF] Executing ObjectResult, writing value of type 'System.Collections.Generic.List`1[[FortalezaServer.Models.InformacoesEmpresa, FortalezaServer, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2021-03-25 20:24:30.462 -03:00 [INF] Executed action FortalezaServer.Controllers.InformacoesEmpresaController.GetInformacoesEmpresa (FortalezaServer) in 1385.3128ms
+2021-03-25 20:24:30.465 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.InformacoesEmpresaController.GetInformacoesEmpresa (FortalezaServer)'
+2021-03-25 20:24:30.471 -03:00 [INF] Request finished in 1451.3024ms 200 application/json; charset=utf-8

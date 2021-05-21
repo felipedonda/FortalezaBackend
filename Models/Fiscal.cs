@@ -6,14 +6,12 @@ namespace FortalezaServer.Models
     public partial class Fiscal
     {
         public int Iditem { get; set; }
-        public string Ncm { get; set; }
-        public string Cest { get; set; }
-        public string ImpostoFederal { get; set; }
-        public string ImpostoEstadual { get; set; }
-        public string ImpostoMunicipal { get; set; }
-        public string Cfop { get; set; }
-        public string Origem { get; set; }
-        public string Csosn { get; set; }
+        public int? Ncm { get; set; }
+        public int? Cest { get; set; }
+        public int Cfop { get; set; }
+        public int Origem { get; set; }
+        public int CstIcms { get; set; }
+        public decimal AliquotaIcms { get; set; }
 
         public virtual Item IditemNavigation { get; set; }
     }

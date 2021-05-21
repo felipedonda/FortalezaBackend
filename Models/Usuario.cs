@@ -7,7 +7,10 @@ namespace FortalezaServer.Models
     {
         public Usuario()
         {
-            Caixa = new HashSet<Caixa>();
+            Abertura = new HashSet<Abertura>();
+            Fechamento = new HashSet<Fechamento>();
+            Movimento = new HashSet<Movimento>();
+            Troca = new HashSet<Troca>();
             Venda = new HashSet<Venda>();
         }
 
@@ -21,7 +24,10 @@ namespace FortalezaServer.Models
         public int? Idendereco { get; set; }
 
         public virtual Endereco IdenderecoNavigation { get; set; }
-        public virtual ICollection<Caixa> Caixa { get; set; }
+        public virtual ICollection<Abertura> Abertura { get; set; }
+        public virtual ICollection<Fechamento> Fechamento { get; set; }
+        public virtual ICollection<Movimento> Movimento { get; set; }
+        public virtual ICollection<Troca> Troca { get; set; }
         public virtual ICollection<Venda> Venda { get; set; }
     }
 }

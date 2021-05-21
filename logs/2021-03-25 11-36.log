@@ -1,0 +1,33 @@
+2021-03-25 11:36:07.447 -03:00 [INF] Starting web host
+2021-03-25 11:36:08.598 -03:00 [INF] Now listening on: http://[::]:8000
+2021-03-25 11:36:08.603 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-03-25 11:36:08.610 -03:00 [INF] Hosting environment: Development
+2021-03-25 11:36:08.612 -03:00 [INF] Content root path: C:\Users\felip\source\repos\FortalezaServer
+2021-03-25 11:36:09.633 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/status  
+2021-03-25 11:36:09.694 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.IndexController.GetStatus (FortalezaServer)'
+2021-03-25 11:36:09.754 -03:00 [INF] Route matched with {action = "GetStatus", controller = "Index"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[FortalezaServer.Controllers.IndexController+Status]] GetStatus() on controller FortalezaServer.Controllers.IndexController (FortalezaServer).
+2021-03-25 11:36:10.703 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-03-25 11:36:11.068 -03:00 [INF] Executing ObjectResult, writing value of type 'FortalezaServer.Controllers.IndexController+Status'.
+2021-03-25 11:36:11.200 -03:00 [INF] Executed action FortalezaServer.Controllers.IndexController.GetStatus (FortalezaServer) in 1439.3775ms
+2021-03-25 11:36:11.203 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.IndexController.GetStatus (FortalezaServer)'
+2021-03-25 11:36:11.208 -03:00 [INF] Request finished in 1582.9897ms 200 application/json; charset=utf-8
+2021-03-25 11:36:55.931 -03:00 [INF] Starting web host
+2021-03-25 11:36:56.972 -03:00 [INF] Now listening on: http://[::]:8000
+2021-03-25 11:36:56.977 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2021-03-25 11:36:56.978 -03:00 [INF] Hosting environment: Development
+2021-03-25 11:36:56.979 -03:00 [INF] Content root path: C:\Users\felip\source\repos\FortalezaServer
+2021-03-25 11:37:15.243 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/fiscal/2  
+2021-03-25 11:37:15.295 -03:00 [INF] Request finished in 52.4929ms 404 
+2021-03-25 11:37:23.754 -03:00 [INF] Request starting HTTP/1.1 GET http://localhost:8000/api/fiscal/cfe-venda/2  
+2021-03-25 11:37:23.761 -03:00 [INF] Executing endpoint 'FortalezaServer.Controllers.FiscalController.GetAsync (FortalezaServer)'
+2021-03-25 11:37:23.808 -03:00 [INF] Route matched with {action = "Get", controller = "Fiscal"}. Executing controller action with signature System.Threading.Tasks.Task`1[System.String] GetAsync(Int32) on controller FortalezaServer.Controllers.FiscalController (FortalezaServer).
+2021-03-25 11:37:24.585 -03:00 [INF] Entity Framework Core 3.1.10 initialized 'fortalezaitdbContext' using provider 'MySql.Data.EntityFrameworkCore' with options: None
+2021-03-25 11:37:25.138 -03:00 [INF] Executed DbCommand (6ms) [Parameters=[@__p_0='?' (DbType = Int32)], CommandType='"Text"', CommandTimeout='30']
+SELECT `v`.`idvenda`, `v`.`aberta`, `v`.`acrescimo`, `v`.`desconto`, `v`.`descricao`, `v`.`hora_entrada`, `v`.`hora_fechamento`, `v`.`idcaixa`, `v`.`idcliente`, `v`.`idpdv`, `v`.`idresponsavel`, `v`.`numero_venda`, `v`.`paga`, `v`.`tipo`, `v`.`valor_pago`
+FROM `venda` AS `v`
+WHERE `v`.`idvenda` = @__p_0
+LIMIT 1
+2021-03-25 11:37:25.224 -03:00 [INF] Executing ObjectResult, writing value of type 'System.String'.
+2021-03-25 11:37:25.232 -03:00 [INF] Executed action FortalezaServer.Controllers.FiscalController.GetAsync (FortalezaServer) in 1415.8874ms
+2021-03-25 11:37:25.233 -03:00 [INF] Executed endpoint 'FortalezaServer.Controllers.FiscalController.GetAsync (FortalezaServer)'
+2021-03-25 11:37:25.237 -03:00 [INF] Request finished in 1483.2696ms 200 text/plain; charset=utf-8

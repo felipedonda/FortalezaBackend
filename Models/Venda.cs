@@ -26,10 +26,15 @@ namespace FortalezaServer.Models
         public decimal ValorPago { get; set; }
         public int Idresponsavel { get; set; }
         public int? Idcliente { get; set; }
+        public int Idpdv { get; set; }
+        public int Idcaixa { get; set; }
 
+        public virtual Caixa IdcaixaNavigation { get; set; }
         public virtual Cliente IdclienteNavigation { get; set; }
+        public virtual Pdv IdpdvNavigation { get; set; }
         public virtual Usuario IdresponsavelNavigation { get; set; }
         public virtual Pedido Pedido { get; set; }
+        public virtual Troca Troca { get; set; }
         public virtual ICollection<EstoqueHasVenda> EstoqueHasVenda { get; set; }
         public virtual ICollection<ItemVenda> ItemVenda { get; set; }
         public virtual ICollection<Pagamento> Pagamento { get; set; }

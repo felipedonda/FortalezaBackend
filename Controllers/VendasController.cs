@@ -27,32 +27,132 @@ namespace FortalezaServer.Controllers
                 int tipo = -1,
                 bool abertas = false,
                 bool filtroData = false,
-                DateTime? dataInicial = null,
-                DateTime? dataFinal = null
+                string dataInicial = null,
+                string dataFinal = null,
+                string query = ""
             )
         {
-            var query = _context.Venda
+
+            if(string.IsNullOrWhiteSpace(query))
+            {
+                var vendasQuery = _context.Venda
                 .Include(e => e.ItemVenda)
                 .AsQueryable();
 
-            if (tipo >= 0)
+                if (tipo >= 0)
+                {
+                    vendasQuery = vendasQuery.Where(e => e.Tipo == tipo);
+                }
+
+                if (filtroData)
+                {
+                    try
+                    {
+                        DateTime _dataInicial = DateTime.ParseExact(dataInicial, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                        DateTime _dataFinal = DateTime.ParseExact(dataFinal, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).AddDays(1).AddTicks(-1);
+                        vendasQuery = vendasQuery.Where(e => e.HoraEntrada > _dataInicial & e.HoraEntrada < _dataFinal);
+                    }
+                    catch
+                    {
+                        return BadRequest();
+                    }
+                }
+
+
+                if (abertas)
+                {
+                    vendasQuery = vendasQuery.Where(e => e.Aberta == 1);
+                }
+
+
+                var vendas = await vendasQuery.ToListAsync();
+
+                return vendas;
+            }
+            else
             {
-                query = query.Where(e => e.Tipo == tipo);
+                List<int> queryVendas = await _context.Venda
+                    .Include(e => e.IdclienteNavigation)
+                    .Where(e => e.IdclienteNavigation.Nome.Contains(query))
+                    .Select(e => e.Idvenda).ToListAsync();
+
+                int leadingZeros = 0;
+                string ldzAux = "";
+                for (int i = 0; i < query.Length; i++)
+                {
+                    if (query[i] == '0')
+                    {
+                        leadingZeros++;
+                        ldzAux += '0';
+                    }
+                    else
+                    {
+                        i = query.Length;
+                    }
+                }
+
+                if (query.Length != leadingZeros)
+                {
+                    queryVendas.AddRange(await _context.Venda
+                        .Where(e => e.Idvenda.ToString().Contains(query.Substring(leadingZeros)))
+                        .Select(e => e.Idvenda).ToListAsync());
+                }
+
+                queryVendas.AddRange(await _context.Venda
+                    .Where(e => (ldzAux + e.Idvenda.ToString()).Contains(query))
+                    .Select(e => e.Idvenda).ToListAsync());
+
+                queryVendas.AddRange(await _context.Venda
+                    .Where(e => e.NumeroVenda.ToString().Contains(query))
+                    .Select(e => e.Idvenda).ToListAsync());
+
+                List<Venda> queryResult = new List<Venda>();
+
+
+                DateTime _dataInicial = new DateTime();
+                DateTime _dataFinal = new DateTime();
+
+                if (filtroData)
+                {
+                    _dataInicial = DateTime.ParseExact(dataInicial, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                    _dataFinal = DateTime.ParseExact(dataFinal, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).AddDays(1).AddTicks(-1);
+                }
+
+
+                if (queryVendas.Count > 0)
+                {
+                    List<int> sortedItems = queryVendas.GroupBy(e => e).OrderBy(e => e.Count()).Select(e => e.Key).ToList();
+                    foreach (int idvenda in sortedItems)
+                    {
+                        if(filtroData)
+                        {
+                            Venda venda = await _context.Venda
+                                .Include(e => e.IdclienteNavigation)
+                                .Where(e => e.Idvenda == idvenda)
+                                .Where(e => e.HoraEntrada > _dataInicial & e.HoraEntrada < _dataFinal)
+                                .FirstOrDefaultAsync();
+                            if (venda != null)
+                            {
+                                queryResult.Add(venda);
+                            }
+                        }
+                        else
+                        {
+                            queryResult.Add(await _context.Venda
+                                .Include(e => e.IdclienteNavigation)
+                                .Where(e => e.Idvenda == idvenda)
+                                .FirstOrDefaultAsync());
+                        }
+
+                    }
+                    return queryResult;
+                }
+                else
+                {
+                    return null;
+                }
             }
 
-            if(filtroData)
-            {
-                query = query.Where(e => e.HoraEntrada > dataInicial & e.HoraEntrada < dataFinal);
-            }
-
-            if(abertas)
-            {
-                query = query.Where(e => e.Aberta == 1);
-            }
-
-            var vendas = await query.ToListAsync();
-
-            return vendas;
         }
 
         // GET: api/Vendas/5
@@ -61,7 +161,8 @@ namespace FortalezaServer.Controllers
             (
                 int id,
                 bool itemvendas = false,
-                bool pagamentos = false
+                bool pagamentos = false,
+                bool troca = false
             )
         {
             var venda = await _context.Venda.FindAsync(id);
@@ -96,9 +197,19 @@ namespace FortalezaServer.Controllers
                     .LoadAsync();
             }
 
-            if(venda.Idcliente != null)
+            if (troca)
+            {
+                await _context.Entry(venda).Reference(e => e.Troca)
+                    .Query()
+                    .Include(e => e.TrocaHasItemVenda)
+                    .LoadAsync();
+            }
+
+            if (venda.Idcliente != null)
             {
                 await _context.Entry(venda).Reference(e => e.IdclienteNavigation)
+                    .Query()
+                    .Include(e => e.IdenderecoNavigation)
                     .LoadAsync();
             }
 
@@ -163,33 +274,66 @@ namespace FortalezaServer.Controllers
         [HttpPost]
         public async Task<ActionResult<Venda>> PostVenda(Venda venda)
         {
+            //registrando o número da venda. Registro separado do ID já que esse pode ser resetado.
             venda.NumeroVenda = await Venda.GetLastNumero(_context);
+
             _context.Venda.Add(venda);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetVenda", new { id = venda.Idvenda }, venda);
         }
 
+
         [HttpPost("{id}/pagamentos")]
         public async Task<ActionResult<Venda>> PostPagamento(int id, Pagamento pagamento)
         {
-            var venda = await _context.Venda.FindAsync(id);
+            var venda = await _context.Venda
+                .Where(e => e.Idvenda == id)
+                .Include(e => e.ItemVenda)
+                .Include(e => e.IdclienteNavigation)
+                .ThenInclude(e => e.ClienteHasMovimento)
+                .ThenInclude(e => e.IdmovimentoNavigation)
+                .FirstOrDefaultAsync();
+
 
             if (venda == null)
             {
                 return NotFound();
             }
 
-            await _context.Entry(venda).Collection(e => e.ItemVenda).LoadAsync();
+            //checando caso o pagamento debita do cliente e se o seu saldo é positivo.
+            if (pagamento.IdmovimentoNavigation.IdformaPagamentoNavigation.DebitarCliente == 1)
+            {
+                if(venda.IdclienteNavigation != null)
+                {
+                    if((venda.IdclienteNavigation.SaldoEmConta >= pagamento.IdmovimentoNavigation.Valor) || pagamento.IdmovimentoNavigation.IdformaPagamentoNavigation.GerarContasReceber == 1)
+                    {
+                        //criando movimentação financeira na conta do cliente
+                        await venda.IdclienteNavigation.AddMovimento(_context, new Movimento
+                        {
+                            HoraEntrada = DateTime.Now,
+                            Idpdv = pagamento.IdmovimentoNavigation.Idpdv,
+                            Idusuario = pagamento.IdmovimentoNavigation.Idusuario,
+                            Valor = pagamento.IdmovimentoNavigation.Valor,
+                            Tipo = 3,
+                            Descricao = "COMPRA COD: " + venda.Idvenda
+                        });
+                    }
+                    else
+                    {
+                        return Unauthorized("Saldo do cliente insuficiente para operação.");
+                    }
+                }
+                else
+                {
+                    return Unauthorized("Cliente não selecionado.");
+                }
+            }
 
+            //limpando as navigations para evitar que seja salvo em dobro
             pagamento.Idvenda = id;
             pagamento.IdmovimentoNavigation.IdformaPagamentoNavigation = null;
             pagamento.IdmovimentoNavigation.IdcaixaNavigation = null;
-
-            if(venda.ValorPago == null)
-            {
-                venda.ValorPago = 0;
-            }
 
             venda.ValorPago += pagamento.IdmovimentoNavigation.Valor;
 

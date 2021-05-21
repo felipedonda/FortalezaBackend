@@ -24,39 +24,66 @@ namespace FortalezaServer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Caixa>>> GetCaixa(
             bool filtroData = false,
-            DateTime? dataInicial = null,
-            DateTime? dataFinal = null)
+            string dataInicial = null,
+            string dataFinal = null)
         {
             List<Caixa> caixas = new List<Caixa>();
+            var query = _context.Caixa
+                .Include(e => e.IdnomeCaixaNavigation)
+                .Include(e => e.Abertura)
+                    .ThenInclude(e => e.IdpdvNavigation)
+                .Include(e => e.Abertura)
+                    .ThenInclude(e => e.IdusuarioNavigation)
+                .Include(e => e.Fechamento)
+                    .ThenInclude(e => e.IdpdvNavigation)
+                .Include(e => e.Fechamento)
+                    .ThenInclude(e => e.IdusuarioNavigation)
+                .AsQueryable();
 
             if (filtroData)
             {
-                if(dataInicial != null & dataFinal != null)
+                try
                 {
-                    caixas = await _context.Caixa
-                    .Where(e => (e.HoraAbertura > dataInicial) & (e.HoraAbertura < dataFinal))
-                    .Include(e => e.IdresponsavelNavigation)
-                    .ToListAsync();
+                    DateTime _dataInicial = DateTime.ParseExact(dataInicial, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
+                    DateTime _dataFinal = DateTime.ParseExact(dataFinal, "yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture).AddDays(1).AddTicks(-1);
+                    query = query.Where(e => (e.Abertura.Hora > _dataInicial) & (e.Abertura.Hora < _dataFinal));
                 }
-                else
+                catch
                 {
                     return BadRequest();
                 }
             }
-            else
+
+            caixas = await query.ToListAsync();
+            foreach(var caixa in caixas)
             {
-                caixas = await _context.Caixa
-                    .Include(e => e.IdresponsavelNavigation)
-                    .ToListAsync();
+                await _context.Entry(caixa)
+                    .Reference(e => e.Abertura).LoadAsync();
+
+                await _context.Entry(caixa)
+                    .Reference(e => e.Fechamento).LoadAsync();
+
             }
+
             return caixas;
         }
 
         [HttpGet("actions/aberto")]
-        public async Task<ActionResult<Caixa>> GetCaixaAberto(bool movimentos = false)
+        public async Task<ActionResult<Caixa>> GetCaixaAberto(int idnomeCaixa, bool movimentos = false)
         {
-            var caixa = await _context.Caixa.Where(e => e.Aberto == 1).FirstOrDefaultAsync();
-            
+            if(idnomeCaixa < 1)
+            {
+                return BadRequest();
+            }
+
+            var caixa = await _context.Caixa
+                .Where(e => e.Aberto == 1 && e.IdnomeCaixa == idnomeCaixa)
+                .Include(e => e.IdnomeCaixaNavigation)
+                .Include(e => e.Abertura)
+                    .ThenInclude(e => e.IdpdvNavigation)
+                .Include(e => e.Abertura)
+                    .ThenInclude(e => e.IdusuarioNavigation)
+                .FirstOrDefaultAsync();
 
             if (caixa == null)
             {
@@ -80,6 +107,18 @@ namespace FortalezaServer.Controllers
         public async Task<ActionResult<Caixa>> GetCaixa(int id, bool movimentos = false)
         {
             var caixa = await _context.Caixa.FindAsync(id);
+
+            await _context.Entry(caixa)
+                .Reference(e => e.IdnomeCaixaNavigation)
+                .LoadAsync();
+
+            await _context.Entry(caixa)
+                .Reference(e => e.Abertura)
+                .LoadAsync();
+
+            await _context.Entry(caixa)
+                .Reference(e => e.Fechamento)
+                .LoadAsync();
 
             if (caixa == null)
             {
@@ -112,6 +151,9 @@ namespace FortalezaServer.Controllers
             try
             {
                 await _context.SaveChangesAsync();
+                caixa.Aberto = 1;
+                _context.Entry(caixa).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -134,6 +176,8 @@ namespace FortalezaServer.Controllers
         [HttpPost]
         public async Task<ActionResult<Caixa>> PostCaixa(Caixa caixa)
         {
+            caixa.IdnomeCaixa = caixa.IdnomeCaixaNavigation.IdnomeCaixa;
+            caixa.IdnomeCaixaNavigation = null;
             _context.Caixa.Add(caixa);
             await _context.SaveChangesAsync();
 
@@ -155,6 +199,72 @@ namespace FortalezaServer.Controllers
 
             return caixa;
         }
+
+
+        [HttpPost("{id}/abrir")]
+        public async Task<IActionResult> AbrirCaixa(
+            int id,
+            int idusuario,
+            int idpdv)
+        {
+            var caixa = await _context.Caixa.FindAsync(id);
+
+            if (caixa == null)
+            {
+                return NotFound();
+            }
+
+            Abertura abertura = new Abertura
+            {
+                Idpdv = idpdv,
+                Idusuario = idusuario,
+                Idcaixa = id,
+                Hora = DateTime.Now
+            };
+
+            _context.Abertura.Add(abertura);
+            await _context.SaveChangesAsync();
+            
+            caixa.Aberto = 1;
+            _context.Entry(caixa).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            
+
+            return NoContent();
+        }
+
+        [HttpPost("{id}/fechar")]
+        public async Task<IActionResult> FecharCaixa(
+            int id,
+            int idusuario,
+            int idpdv)
+        {
+            var caixa = await _context.Caixa.FindAsync(id);
+
+            if (caixa == null)
+            {
+                return NotFound();
+            }
+
+            Fechamento fechamento = new Fechamento
+            {
+                Idpdv = idpdv,
+                Idusuario = idusuario,
+                Idcaixa = id,
+                Hora = DateTime.Now
+            };
+
+            _context.Fechamento.Add(fechamento);
+            await _context.SaveChangesAsync();
+
+            caixa.Aberto = 0;
+            _context.Entry(caixa).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+
+            return NoContent();
+        }
+
 
         private bool CaixaExists(int id)
         {
