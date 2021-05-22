@@ -29,8 +29,8 @@ namespace FortalezaServer.Controllers
             public string ErrorMessage { get; set; }
         }
 
-        private readonly string Version = "0.6.2";
-        private readonly string RequiredClient = "0.6.2";
+        private readonly string Version = "0.6.3";
+        private readonly string RequiredClient = "0.6.3";
         private readonly string ServerMode = "development";
         private readonly string DbName = "fortalezaitdb";
 

@@ -30,7 +30,14 @@ namespace FortalezaServer.Models
         {
             get
             {
-                return Cpf.Length == 11;
+                if(!string.IsNullOrEmpty(Cpf))
+                {
+                    return Cpf.Length == 11;
+                }
+                else
+                {
+                    return false;
+                }
             }
         }
 

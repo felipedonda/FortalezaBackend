@@ -181,8 +181,14 @@ namespace FortalezaServer.Controllers
                 return BadRequest();
             }
 
-            var _item = await _context.Item.FindAsync(id);
+            var _item = await _context.Item.Where(e => e.Iditem == id)
+                .Include(e => e.Fiscal)
+                .FirstOrDefaultAsync();
+
             bool hasPacote = false;
+            bool hasFiscal = false;
+
+            hasFiscal = _item.Fiscal != null;
 
             if (_item.Tipo == 2)
             {
@@ -223,6 +229,23 @@ namespace FortalezaServer.Controllers
             {
                 _context.Entry(item).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
+
+                if(item.Fiscal != null)
+                {
+                    if(hasFiscal)
+                    {
+                        item.Fiscal.Iditem = item.Iditem;
+                        _context.Entry(item.Fiscal).State = EntityState.Modified;
+                       
+                    }
+                    else
+                    {
+                        item.Fiscal.Iditem = item.Iditem;
+                        item.Fiscal.IditemNavigation = null;
+                        _context.Fiscal.Add(item.Fiscal);
+                    }
+                    await _context.SaveChangesAsync();
+                }
 
                 if (item.Tipo == 2)
                 {
