@@ -59,38 +59,44 @@ namespace FortalezaServer.Controllers
                     return null;
                 }
             }
-            
         }
 
         // GET: api/Clientes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Cliente>> GetCliente(string id, bool cpf = false, bool movimentos = false)
+        public async Task<ActionResult<Cliente>> GetCliente(int id, bool movimentos = false)
         {
-            int _id = 0;
-            if(!cpf)
-            {
-                try
-                {
-                    _id = int.Parse(id);
-                }
-                catch
-                {
-                    return BadRequest();
-                }
-            }
 
             IQueryable<Cliente> clienteQuery;
 
-            if(cpf)
+            clienteQuery = _context.Cliente.Where(e => e.Idcliente == id);
+
+            clienteQuery = clienteQuery.Include(e => e.IdenderecoNavigation);
+
+            if (movimentos)
             {
-                clienteQuery = _context.Cliente
-                    .Where(e => e.Cpf == id);
+                clienteQuery = clienteQuery
+                    .Include(e => e.ClienteHasMovimento)
+                    .ThenInclude(e => e.IdmovimentoNavigation);
             }
-            else
+
+            Cliente cliente = await clienteQuery.FirstOrDefaultAsync();
+
+            if (cliente == null)
             {
-                clienteQuery = _context.Cliente
-                    .Where(e => e.Idcliente == _id);
+                return NotFound();
             }
+
+            return cliente;
+        }
+
+        // GET: api/Clientes/cpf/5
+        [HttpGet("cpf/{id}")]
+        public async Task<ActionResult<Cliente>> GetClienteByCpf(string cpf, bool movimentos = false)
+        {
+
+            IQueryable<Cliente> clienteQuery;
+
+            clienteQuery = _context.Cliente.Where(e => e.Cpf == cpf);
 
             clienteQuery = clienteQuery.Include(e => e.IdenderecoNavigation);
 
@@ -115,7 +121,7 @@ namespace FortalezaServer.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCliente(int id, Cliente cliente)
+        public async Task<IActionResult> PutCliente(int id, [FromBody] Cliente cliente)
         {
             if (id != cliente.Idcliente)
             {
@@ -148,7 +154,7 @@ namespace FortalezaServer.Controllers
         }
 
         [HttpPost("{id}/movimento")]
-        public async Task<IActionResult> PostMovimento(int id, Movimento movimento)
+        public async Task<IActionResult> PostMovimento(int id, [FromBody] Movimento movimento)
         {
             Cliente cliente = await _context.Cliente.FindAsync(id);
 
@@ -183,7 +189,7 @@ namespace FortalezaServer.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Cliente>> PostCliente(Cliente cliente)
+        public async Task<ActionResult<Cliente>> PostCliente([FromBody] Cliente cliente)
         {
             _context.Cliente.Add(cliente);
             await _context.SaveChangesAsync();

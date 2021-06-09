@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Microsoft.OpenApi.Models;
+
 
 namespace FortalezaServer
 {
@@ -80,6 +82,14 @@ namespace FortalezaServer
                     ";password=" + dbconfig.Password +
                     ";database=" + dbconfig.Database )
             );
+
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Fortaleza API", Version = "v1" });
+            });
+
+            services.AddSwaggerGenNewtonsoftSupport();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -94,6 +104,11 @@ namespace FortalezaServer
 
             app.UseStaticFiles();
 
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Fortaleza API V1");
+            });
+
             app.UseRouting();
 
             app.UseAuthorization();
@@ -102,6 +117,8 @@ namespace FortalezaServer
             {
                 endpoints.MapControllers();
             });
+
+            app.UseSwagger();
         }
     }
 }
